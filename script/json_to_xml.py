@@ -28,9 +28,23 @@ def convert_json_to_xml(file_to_process):
         # load json file
         data = json.load(file)
         for group in annotations:
-            for object in data['Objects_Data']:
+            # make the group
+            xml_group = ET.SubElement(xml_annotation_groups, 'Group',
+                                      attrib={'Name': group, 'PartOfGroup': 'None', 'Color': colors[group]})
+            xml_group_attrib = ET.SubElement(xml_group, 'Attributes')
+            objects = data['Objects_data']
+            for object in objects:
+                # only operate on target data
                 if object['Classification'] == group:
-                    
+                    # get coordinate of the center of mass
+                    cmx, cmy = object['Center_of_Mass']
+                    points = object['ROI_Points']
+                    for i, point in enumerate(points):
+                        px, py = point
+
+
+
+
 
 
 
