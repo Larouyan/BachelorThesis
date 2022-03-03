@@ -32,21 +32,28 @@ def convert_json_to_xml(file_to_process):
             xml_group = ET.SubElement(xml_annotation_groups, 'Group',
                                       attrib={'Name': group, 'PartOfGroup': 'None', 'Color': colors[group]})
             xml_group_attrib = ET.SubElement(xml_group, 'Attributes')
-            objects = data['Objects_data']
-            for object in objects:
+            objects = data['Objects_Data']
+            for i, object in enumerate(objects):
                 # only operate on target data
                 if object['Classification'] == group:
+                    # Annotation
+                    annotation_attrib = {'Name': f'Annotation {i}', 'PartOfGroup': group, 'Color': colors[group],
+                                         'Type': 'Polygon'}
+                    xml_annotation = ET.SubElement(xml_annotations, 'Annotation', annotation_attrib)
+
+                    # Center of Mass
                     # get coordinate of the center of mass
                     cmx, cmy = object['Center_of_Mass']
+                    cm_attrib = {'X': str(cmx), 'Y': str(cmy)}
+                    xml_cm = ET.SubElement(xml_annotation, 'CenterOfMass', attrib=cm_attrib)
+
+                    # ROI Points
+                    xml_coordinates = ET.SubElement(xml_annotation, 'Coordinates')
+                    # get the list of points
                     points = object['ROI_Points']
-                    for i, point in enumerate(points):
-                        px, py = point
-
-
-
-
-
-
+                    for j, point in enumerate(points):
+                        coord_attrib = {'Order': str(j), 'X': str(point[0]), 'Y': str(point[1])}
+                        xml_coordinate = ET.SubElement(xml_coordinates, 'Coordinate', attrib=coord_attrib)
 
     # print(ET.tostring(xml_tree))
 
