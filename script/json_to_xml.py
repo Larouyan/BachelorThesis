@@ -51,9 +51,12 @@ def convert_json_to_xml(file_to_process):
                     xml_coordinates = ET.SubElement(xml_annotation, 'Coordinates')
                     # get the list of points
                     points = object['ROI_Points']
+                    # iterate over the list of points
                     for j, point in enumerate(points):
                         coord_attrib = {'Order': str(j), 'X': str(point[0]), 'Y': str(point[1])}
                         xml_coordinate = ET.SubElement(xml_coordinates, 'Coordinate', attrib=coord_attrib)
+
+    e = ET.ElementTree(xml_tree).write('output.xml', pretty_print=True)
 
     # print(ET.tostring(xml_tree))
 
