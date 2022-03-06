@@ -1,1 +1,4 @@
 script/.idea
+*.xml
+*/json_data
+*/output

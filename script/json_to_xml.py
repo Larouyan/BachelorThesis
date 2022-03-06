@@ -6,7 +6,7 @@ import re
 import json
 
 
-def convert_json_to_xml(file_to_process):
+def convert_json_to_xml(file_to_process, output_folder):
     """
         this function take a json file containing data about Tumor, Extraepithelial CD8+ Cell and
         Intraepithelial CD8+ Cell as input and create a xml file that can be loaded in ASAP.
@@ -36,7 +36,7 @@ def convert_json_to_xml(file_to_process):
             for i, object in enumerate(objects):
                 # only operate on target data
                 if object['Classification'] == group:
-                    # Annotation
+                    # annotation
                     annotation_attrib = {'Name': f'Annotation {i}', 'PartOfGroup': group, 'Color': colors[group],
                                          'Type': 'Polygon'}
                     xml_annotation = ET.SubElement(xml_annotations, 'Annotation', annotation_attrib)
@@ -64,4 +64,22 @@ def convert_json_to_xml(file_to_process):
 if __name__ == '__main__':
     path = 'C:/Users/Maintenant Pret/Desktop/Unifr/Bachelor/data/' \
            'export/Masks_00.2205_1D_AE1_AE3_CD8-level0-hotspot.json'
-    convert_json_to_xml(path)
+    # pass input folder of json files and output folder as program arguments
+    parser = argparse.ArgumentParser('Input and output folder')
+    parser.add_argument('--input_files_folder', type=str, help='directory of the json data files', required=True)
+    parser.add_argument('--output_folder', type=str, help='directory of the output folder', required=True)
+    args = parser.parse_args()
+
+    # get the values of input and output folder
+    input_dir = args.input_files_folder
+    output_dir = args.output_folder
+
+    # get all files to process as a list
+
+
+    # if output folder given doesn't exist then create it
+    if not os.path.isdir(output_dir):
+        os.mkdir(output_dir)
+
+
+    # convert_json_to_xml(path, output_dir)
