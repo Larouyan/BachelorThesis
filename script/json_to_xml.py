@@ -24,7 +24,10 @@ def convert_json_to_xml(files_to_process, output_folder):
     xml_annotation_groups = ET.SubElement(xml_tree, 'AnnotationGroups')
 
     for file_to_process in files_to_process:
-        output_file = os.path.join(output_folder, f'{os.path.basename(file_to_process)}_asap.xml')
+        # remove .json extension
+        file_name = os.path.splitext(file_to_process)[0]
+        # add .xml extension
+        output_file = os.path.join(output_folder, f'{os.path.basename(file_name)}_asap.xml')
         # open json file
         with open(file_to_process) as file:
             # load json file
@@ -64,8 +67,6 @@ def convert_json_to_xml(files_to_process, output_folder):
 
 
 if __name__ == '__main__':
-    # path = 'C:/Users/Maintenant Pret/Desktop/Unifr/Bachelor/data/' \
-    #        'export/Masks_00.2205_1D_AE1_AE3_CD8-level0-hotspot.json'
     # pass input folder of json files and output folder as program arguments
     parser = argparse.ArgumentParser('Input and output folder')
     parser.add_argument('--input_files_folder', type=str, help='directory of the json data files', required=True)
@@ -83,6 +84,7 @@ if __name__ == '__main__':
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
 
+    # stop the process if input folder is empty
     assert len(files) > 0, f'There is no files to process in the directory {input_dir}'
     # create xml files
     convert_json_to_xml(files, output_dir)
