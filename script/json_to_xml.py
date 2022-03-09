@@ -1,8 +1,6 @@
-import glob
 import os
 from lxml import etree as ET
 import argparse
-import re
 import json
 
 
