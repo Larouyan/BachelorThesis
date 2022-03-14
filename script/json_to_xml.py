@@ -9,10 +9,11 @@ def convert_json_to_xml(files_to_process, output_folder):
         this function take a json file containing data about Tumor, Extraepithelial CD8+ Cell and
         Intraepithelial CD8+ Cell as input and create a xml file that can be loaded in ASAP.
     """
-    # interested areas
-    annotations = ['Tumor', 'Extraepithelial CD8+ Cell', 'Intraepithelial CD8+ Cell']
-    # color code of the interested areas
-    colors = {'Tumor': '#4d66cc', 'Extraepithelial CD8+ Cell': 'magenta', 'Intraepithelial CD8+ Cell': 'magenta'}
+    # interested features
+    annotations = ['Tumor', 'Extraepithelial CD8+ Cell', 'Intraepithelial CD8+ Cell', 'Center of Mass', 'hotspot']
+    # color code of the features
+    colors = {'Tumor': '#4d66cc', 'Extraepithelial CD8+ Cell': 'magenta', 'Intraepithelial CD8+ Cell': 'magenta',
+              'Center of Mass': 'red', 'hotspot': '#64FE2E'}
 
     # initiate xml_tree
     xml_tree = ET.Element('ASAP_Annotations')
@@ -39,17 +40,11 @@ def convert_json_to_xml(files_to_process, output_folder):
                 for i, object in enumerate(objects):
                     # only operate on target data
                     if object['Classification'] == group:
+                        # Tumour and CD8+ Cell
                         # annotation
                         annotation_attrib = {'Name': f'Annotation {i}', 'PartOfGroup': group, 'Color': colors[group],
                                              'Type': 'Polygon'}
                         xml_annotation = ET.SubElement(xml_annotations, 'Annotation', annotation_attrib)
-
-                        # Center of Mass
-                        # get coordinate of the center of mass
-                        cmx, cmy = object['Center_of_Mass']
-                        cm_attrib = {'X': str(cmx), 'Y': str(cmy)}
-                        xml_cm = ET.SubElement(xml_annotation, 'CenterOfMass', attrib=cm_attrib)
-
                         # ROI Points
                         xml_coordinates = ET.SubElement(xml_annotation, 'Coordinates')
                         # get the list of points
@@ -58,10 +53,18 @@ def convert_json_to_xml(files_to_process, output_folder):
                         for j, point in enumerate(points):
                             coord_attrib = {'Order': str(j), 'X': str(point[0]), 'Y': str(point[1])}
                             xml_coordinate = ET.SubElement(xml_coordinates, 'Coordinate', attrib=coord_attrib)
+                    elif group == 'Center of Mass':
+                        # Center of Mass (Dot)
+                        annotation_attrib = {'Name': f'Annotation{i + len(objects)}', 'PartOfGroup': group,
+                                             'Color': colors[group], 'Type': 'Dot'}
+                        # get coordinates of the center of mass
+                        cmx, cmy = object['Center_of_Mass']
+                        cm_attrib = {'Order': '0', 'X': str(cmx), 'Y': str(cmy)}
+                        xml_annotation = ET.SubElement(xml_annotations, 'Annotation', annotation_attrib)
+                        xml_coordinates = ET.SubElement(xml_annotation, 'Coordinates')
+                        xml_coordinate = ET.SubElement(xml_coordinates, 'Coordinate', attrib=cm_attrib)
 
         e = ET.ElementTree(xml_tree).write(output_file, pretty_print=True)
-
-    # print(ET.tostring(xml_tree))
 
 
 if __name__ == '__main__':
