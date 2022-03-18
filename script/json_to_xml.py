@@ -8,8 +8,9 @@ from xml.dom import minidom
 
 def convert_json_to_xml(files_to_process, hotspot_folder, output_folder):
     """
-        this function take a json file containing data about Tumor, Extraepithelial CD8+ Cell and
-        Intraepithelial CD8+ Cell, an output folder as input and create a xml file that can be loaded in ASAP.
+        This function take a list of json files containing data about Tumor, Extraepithelial CD8+ Cell and
+        Intraepithelial CD8+ Cell, a hotspot folder of xml files containing the coordinates of the hotspot
+        and an output folder as input and create xml files that can be loaded in ASAP.
     """
     # interested features
     annotations = ['Tumor', 'Extraepithelial CD8+ Cell', 'Intraepithelial CD8+ Cell', 'Center of Mass', 'hotspot']
@@ -44,12 +45,12 @@ def convert_json_to_xml(files_to_process, hotspot_folder, output_folder):
             with open(file_to_process) as file:
                 # load json file
                 data = json.load(file)
+                objects = data['Objects_Data']
                 for group in annotations:
                     # make the group
                     xml_group = ET.SubElement(xml_annotation_groups, 'Group',
                                               attrib={'Name': group, 'PartOfGroup': 'None', 'Color': colors[group]})
                     xml_group_attrib = ET.SubElement(xml_group, 'Attributes')
-                    objects = data['Objects_Data']
                     for i, object in enumerate(objects):
                         if object['Classification'] == group:
                             # Tumour and CD8+ Cell (Polygons)
@@ -106,7 +107,7 @@ if __name__ == '__main__':
     hotspot_dir = args.hotspot_folder
 
     # get all files to process as a list
-    files = [os.path.join(input_dir, f) for f in os.listdir(input_dir) if f.endswith('-hotspot.json')] # can be better
+    files = [os.path.join(input_dir, f) for f in os.listdir(input_dir) if re.search('Masks_.*-level0-hotspot.json', f)]
     # xml hotspot files
     hotspots = [os.path.join(hotspot_dir, f) for f in os.listdir(hotspot_dir) if f.endswith('.xml')]
 
