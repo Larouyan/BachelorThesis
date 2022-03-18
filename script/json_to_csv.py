@@ -1,5 +1,6 @@
 import os
 import argparse
+import re
 import json
 import csv
 
@@ -9,13 +10,23 @@ def convert_json_to_csv(files_to_process, output_folder):
         This function take a list of json files containing data about Tumor, Extraepithelial CD8+ Cell and
         Intraepithelial CD8+ Cell and an output folder as input and create a .CSV files of the interested features.
     """
-    features = ['Classification', 'Area', 'Circularity', 'Number_Cells', 'Perimeter', 'Solidity']
+    features = ['Object_Index', 'Classification', 'Area', 'Circularity', 'Number_Cells', 'Perimeter', 'Solidity']
     for file_to_process in files_to_process:
+        # remove .json extension
+        file_name = os.path.basename(os.path.splitext(file_to_process)[0])
+        # add .xml extension
+        output_file = os.path.join(output_folder, f'{file_name}.csv')
         # open json file
         with open(file_to_process) as file:
             # load json file
             data = json.load(file)
             objects = data['Objects_Data']
+            with open(output_file, 'w', newline='') as csv_file:
+                writer = csv.DictWriter(csv_file, delimiter=';', fieldnames=features)
+                writer.writeheader()
+                for i, object in enumerate(objects):
+                    row = {feature: object[feature] for feature in features}
+                    writer.writerow(row)
 
 
 if __name__ == '__main__':
@@ -38,4 +49,4 @@ if __name__ == '__main__':
     # stop the process if input folder is empty
     assert len(files) > 0, f'There is no files to process in the directory {input_dir}'
     # create xml files
-    convert_json_to_xml(files, output_dir)
+    convert_json_to_csv(files, output_dir)
