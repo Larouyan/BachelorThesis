@@ -3,6 +3,7 @@ from lxml import etree as ET
 import argparse
 import json
 import re
+from xml.dom import minidom
 
 
 def convert_json_to_xml(files_to_process, hotspot_folder, output_folder):
@@ -14,7 +15,7 @@ def convert_json_to_xml(files_to_process, hotspot_folder, output_folder):
     annotations = ['Tumor', 'Extraepithelial CD8+ Cell', 'Intraepithelial CD8+ Cell', 'Center of Mass', 'hotspot']
     # color code of the features
     colors = {'Tumor': '#4d66cc', 'Extraepithelial CD8+ Cell': 'magenta', 'Intraepithelial CD8+ Cell': 'magenta',
-              'Center of Mass': 'red', 'hotspot': '#64FE2E'}
+              'Center of Mass': 'black', 'hotspot': '#64FE2E'}
 
     # initiate xml_tree
     xml_tree = ET.Element('ASAP_Annotations')
@@ -33,6 +34,12 @@ def convert_json_to_xml(files_to_process, hotspot_folder, output_folder):
         # open correct hotspot xml
         file_code = re.search('Masks_(.*)-level0-hotspot', file_name).group(1)
         if file_code in hotspot_name:
+            # open hotspot xml file
+            hotspot_file = minidom.parse(os.path.join(os.path.dirname(hotspot_folder[0]), file_code + '.xml'))
+            coordinates = hotspot_file.getElementsByTagName('Coordinate')
+            hotspot_coord = [(float(point.attributes['X'].value), float(point.attributes['Y'].value))
+                             for point in coordinates]
+            dx, dy = hotspot_coord[0]
             # open json file
             with open(file_to_process) as file:
                 # load json file
@@ -56,22 +63,33 @@ def convert_json_to_xml(files_to_process, hotspot_folder, output_folder):
                             points = object['ROI_Points']
                             # iterate over the list of points
                             for j, point in enumerate(points):
-                                coord_attrib = {'Order': str(j), 'X': str(point[0]), 'Y': str(point[1])}
+                                coord_attrib = {'Order': str(j), 'X': str(point[0] + dx), 'Y': str(point[1] + dy)}
                                 xml_coordinate = ET.SubElement(xml_coordinates, 'Coordinate', attrib=coord_attrib)
                         elif group == 'Center of Mass':
                             # Center of Mass (Dot)
-                            annotation_attrib = {'Name': f'Annotation{i + len(objects)}', 'PartOfGroup': group,
+                            annotation_attrib = {'Name': f'Annotation {i + len(objects)}', 'PartOfGroup': group,
                                                  'Color': colors[group], 'Type': 'Dot'}
                             # get coordinates of the center of mass
                             cmx, cmy = object['Center_of_Mass']
-                            cm_attrib = {'Order': '0', 'X': str(cmx), 'Y': str(cmy)}
+                            cm_attrib = {'Order': '0', 'X': str(cmx + dx), 'Y': str(cmy + dy)}
                             xml_annotation = ET.SubElement(xml_annotations, 'Annotation', annotation_attrib)
                             xml_coordinates = ET.SubElement(xml_annotation, 'Coordinates')
                             xml_coordinate = ET.SubElement(xml_coordinates, 'Coordinate', attrib=cm_attrib)
+                        elif group == 'hotspot':
+                            # Hotspot (Rectangle)
+                            annotation_attrib = {'Name': f'Annotation {2 * len(objects)}', 'PartOfGroup': group,
+                                                 'Color': colors[group], 'Type': 'Rectangle'}
+                            xml_annotation = ET.SubElement(xml_annotations, 'Annotation', annotation_attrib)
+                            xml_coordinates = ET.SubElement(xml_annotation, 'Coordinates')
+                            for j, point in enumerate(hotspot_coord):
+                                coord_attrib = {'Order': str(j), 'X': str(point[0]), 'Y': str(point[1])}
+                                xml_coordinate = ET.SubElement(xml_coordinates, 'Coordinate', attrib=coord_attrib)
+                            break
 
+            # Write
             e = ET.ElementTree(xml_tree).write(output_file, pretty_print=True)
         else:
-            print(f'There is no hotspot annotations check folder {file_code}')
+            print(f'There is no hotspot annotations check folder for {file_to_process}')
 
 
 if __name__ == '__main__':
@@ -88,7 +106,7 @@ if __name__ == '__main__':
     hotspot_dir = args.hotspot_folder
 
     # get all files to process as a list
-    files = [os.path.join(input_dir, f) for f in os.listdir(input_dir) if f.endswith('-hotspot.json')]
+    files = [os.path.join(input_dir, f) for f in os.listdir(input_dir) if f.endswith('-hotspot.json')] # can be better
     # xml hotspot files
     hotspots = [os.path.join(hotspot_dir, f) for f in os.listdir(hotspot_dir) if f.endswith('.xml')]
 
@@ -98,6 +116,7 @@ if __name__ == '__main__':
 
     # stop the process if input folder is empty
     assert len(files) > 0, f'There is no files to process in the directory {input_dir}'
+    assert len(hotspots) >= len(files)
     # create xml files
     convert_json_to_xml(files, hotspots, output_dir)
 
