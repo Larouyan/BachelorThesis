@@ -24,7 +24,7 @@ def convert_json_to_csv(files_to_process, output_folder):
             with open(output_file, 'w', newline='') as csv_file:
                 writer = csv.DictWriter(csv_file, delimiter=';', fieldnames=features)
                 writer.writeheader()
-                for i, object in enumerate(objects):
+                for object in objects:
                     row = {feature: object[feature] for feature in features}
                     writer.writerow(row)
 
