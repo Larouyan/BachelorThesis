@@ -1,0 +1,95 @@
+Object_Index;Classification;Area;Circularity;Number_Cells;Perimeter;Solidity
+0;Tumor;5976;0.2614;1;535;0.7297
+1;Tumor;7336;0.1319;1;836;0.5314
+2;Tumor;2204;0.2396;1;340;0.7512
+3;Tumor;2368;0.4686;2;251;0.9171
+4;Tumor;4660;0.5719;1;319;0.9581
+5;Tumor;1660;0.4471;1;215;0.9012
+6;Tumor;14076;0.1842;5;980;0.7237
+7;Tumor;5048;0.1886;1;579;0.666
+8;Tumor;11948;0.1643;1;955;0.6004
+9;Tumor;4996;0.2002;1;559;0.5842
+10;Tumor;5784;0.2161;2;580;0.6349
+11;Tumor;7260;0.559;2;403;0.9555
+12;Tumor;8072;0.6215;1;403;0.9704
+13;Tumor;6044;0.586;1;360;0.9658
+14;Tumor;11820;0.4182;2;595;0.8906
+15;Tumor;1312;0.3962;1;203;0.7932
+16;Tumor;11384;0.1034;2;1175;0.5093
+17;Tumor;4360;0.2682;1;452;0.7171
+18;Tumor;3888;0.573;1;292;0.9614
+19;Tumor;1744;0.4528;1;220;0.8417
+20;Tumor;23396;0.2597;7;1063;0.6924
+21;Tumor;2052;0.2649;1;312;0.716
+22;Tumor;1776;0.5579;1;200;0.9427
+23;Tumor;8624;0.3051;2;595;0.8455
+24;Tumor;4796;0.5214;1;339;0.9316
+25;Tumor;1364;0.4462;1;196;0.8536
+26;Tumor;4396;0.5978;2;304;0.9532
+27;Tumor;5644;0.6135;1;340;0.9661
+28;Extraepithelial CD8+ Cell;873;0.901;1;110;1
+29;Extraepithelial CD8+ Cell;508;0.9312;1;83;1
+30;Extraepithelial CD8+ Cell;854;0.9628;1;105;1
+31;Extraepithelial CD8+ Cell;1437;0.7191;1;158;0.918
+32;Extraepithelial CD8+ Cell;622;0.8818;1;94;0.9936
+33;Extraepithelial CD8+ Cell;537;0.9141;1;86;0.9931
+34;Extraepithelial CD8+ Cell;551;0.8606;1;89;0.9903
+35;Extraepithelial CD8+ Cell;753;0.8641;1;104;0.9621
+36;Extraepithelial CD8+ Cell;772;0.938;1;101;1
+37;Extraepithelial CD8+ Cell;759;0.8873;1;104;0.9922
+38;Extraepithelial CD8+ Cell;967;0.8176;1;122;0.9534
+39;Extraepithelial CD8+ Cell;499;0.8821;1;84;0.9927
+40;Extraepithelial CD8+ Cell;887;0.8917;1;112;0.9765
+41;Extraepithelial CD8+ Cell;802;0.9451;1;103;0.9958
+42;Extraepithelial CD8+ Cell;903;0.6996;1;127;0.9141
+43;Extraepithelial CD8+ Cell;1575;0.7433;1;163;0.8923
+44;Extraepithelial CD8+ Cell;1778;0.7833;1;169;0.9452
+45;Extraepithelial CD8+ Cell;879;0.9084;1;110;0.9905
+46;Extraepithelial CD8+ Cell;1021;0.8883;1;120;0.985
+47;Extraepithelial CD8+ Cell;778;0.8859;1;105;0.9794
+48;Extraepithelial CD8+ Cell;709;0.9476;1;97;1
+49;Extraepithelial CD8+ Cell;628;0.9368;1;91;0.9898
+50;Extraepithelial CD8+ Cell;753;0.955;1;99;1
+51;Extraepithelial CD8+ Cell;923;0.9542;1;110;1
+52;Extraepithelial CD8+ Cell;806;0.9389;1;104;0.9911
+53;Extraepithelial CD8+ Cell;656;0.9439;1;93;1
+54;Extraepithelial CD8+ Cell;681;0.9316;1;96;0.9929
+55;Extraepithelial CD8+ Cell;809;0.8549;1;109;0.9643
+56;Extraepithelial CD8+ Cell;871;0.784;1;118;0.9318
+57;Extraepithelial CD8+ Cell;839;0.9262;1;106;0.985
+58;Extraepithelial CD8+ Cell;741;0.7759;1;109;0.9409
+59;Extraepithelial CD8+ Cell;544;0.887;1;88;0.9887
+60;Extraepithelial CD8+ Cell;625;0.9466;1;91;1
+61;Extraepithelial CD8+ Cell;665;0.9391;1;94;0.9945
+62;Extraepithelial CD8+ Cell;772;0.8971;1;104;0.9719
+63;Extraepithelial CD8+ Cell;841;0.9047;1;108;0.9893
+64;Extraepithelial CD8+ Cell;1049;0.8341;1;126;0.973
+65;Extraepithelial CD8+ Cell;777;0.8372;1;108;0.9756
+66;Extraepithelial CD8+ Cell;877;0.8878;1;111;0.9904
+67;Extraepithelial CD8+ Cell;1140;0.7715;1;136;0.9632
+68;Extraepithelial CD8+ Cell;907;0.8637;1;115;0.9945
+69;Extraepithelial CD8+ Cell;739;0.9184;1;100;0.9945
+70;Extraepithelial CD8+ Cell;497;0.9163;1;82;1
+71;Extraepithelial CD8+ Cell;883;0.92;1;110;0.9903
+72;Extraepithelial CD8+ Cell;763;0.9283;1;101;0.9899
+73;Extraepithelial CD8+ Cell;668;0.9347;1;94;0.9882
+74;Extraepithelial CD8+ Cell;831;0.9181;1;107;0.9924
+75;Extraepithelial CD8+ Cell;831;0.9307;1;106;0.9831
+76;Extraepithelial CD8+ Cell;417;0.8855;1;77;0.9929
+77;Extraepithelial CD8+ Cell;1195;0.7709;1;140;0.9081
+78;Extraepithelial CD8+ Cell;975;0.9491;1;113;0.9957
+79;Extraepithelial CD8+ Cell;836;0.9215;1;107;0.991
+80;Extraepithelial CD8+ Cell;1510;0.7669;1;157;0.9124
+81;Extraepithelial CD8+ Cell;416;0.8497;1;78;0.963
+82;Extraepithelial CD8+ Cell;614;0.8967;1;93;0.9892
+83;Extraepithelial CD8+ Cell;766;0.9366;1;101;0.9908
+84;Extraepithelial CD8+ Cell;802;0.904;1;105;0.9875
+85;Extraepithelial CD8+ Cell;919;0.925;1;111;0.9925
+86;Extraepithelial CD8+ Cell;976;0.9297;1;115;0.992
+87;Extraepithelial CD8+ Cell;661;0.8881;1;97;0.9647
+88;Extraepithelial CD8+ Cell;836;0.9659;1;104;1
+89;Extraepithelial CD8+ Cell;906;0.8735;1;114;0.9873
+90;Extraepithelial CD8+ Cell;872;0.8906;1;111;0.9871
+91;Extraepithelial CD8+ Cell;862;0.8662;1;111;0.958
+92;Extraepithelial CD8+ Cell;951;0.8721;1;117;0.9829
+93;Extraepithelial CD8+ Cell;668;0.9512;1;94;1
