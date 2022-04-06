@@ -1,2 +1,0 @@
-python json_to_xml.py --input_files_folder json_data --output_folder output --hotspot_folder 'Hotspot Annotations Checked'
-python json_to_csv.py --input_files_folder json_data --output_folder test
