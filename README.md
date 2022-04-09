@@ -13,4 +13,4 @@ To convert data from json to csv you need to use `json_to_csv.py` with the follo
 - `--output_folder`: Path to the output folder (folder where the csv files will be written, if it doesn't exist it will create one).
 
 ### Environment
-You can set up the conda environment in this directory by using the following command: `conda env create -f environment.yml`
+You can set up the conda environment in the directory "./json_converter" by using the following command: `conda env create -f environment.yml`
