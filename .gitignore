@@ -1,7 +1,7 @@
-script/.idea
+*.idea
 *.xml
 */json_data
 */output
-script/command_line.txt
-script/Hotspot Annotations Checked
-script/test
+*/command_line.txt
+*/Hotspot Annotations Checked
+*/test
