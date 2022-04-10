@@ -5,14 +5,14 @@ from PIL import ImageTk, Image
 import os
 
 
-def select_img_dir():
+def select_img_dir(*args):
     new_dir = filedialog.askdirectory()
     if new_dir:
         if os.path.isdir(new_dir):
             img_dir.set(new_dir)
 
 
-def select_gxl_dir():
+def select_gxl_dir(*args):
     new_dir = filedialog.askdirectory()
     if new_dir:
         if os.path.isdir(new_dir):
@@ -48,8 +48,46 @@ def is_number(inp):
         return False
 
 
-def change_color():
-    return colorchooser.askcolor()
+def update_ns_view(*args):
+    # Update node style color label
+    ns_color_label['background'] = '#{:02x}{:02x}{:02x}'.format(*node_style[selected_node.get()]['color'])
+    # Update node style radius entry
+    ns_entry.delete(0, END)
+    ns_entry.insert(0, node_style[selected_node.get()]['radius'])
+
+
+def update_ns_radius(*args):
+    node_style[selected_node.get()]['radius'] = ns_entry.get()
+    onselect()
+
+
+def update_ns_color(*args):
+    new_color = colorchooser.askcolor()[0]
+    if new_color:
+        node_style[selected_node.get()]['color'] = new_color
+        update_ns_view()
+        onselect()
+
+
+def update_es_view(*args):
+    # Update edge style color label
+    es_color_label['background'] = '#{:02x}{:02x}{:02x}'.format(*edge_style['color'])
+    # Update edge style thickness entry
+    es_entry.delete(0, END)
+    es_entry.insert(0, str(edge_style['thickness']))
+
+
+def update_es_thickness(*args):
+    edge_style['thickness'] = int(es_entry.get())
+    onselect()
+
+
+def update_es_color(*args):
+    new_color = colorchooser.askcolor()[0]
+    if new_color:
+        edge_style['color'] = new_color
+        update_es_view()
+        onselect()
 
 
 def onselect(*args):
@@ -68,16 +106,19 @@ if __name__ == '__main__':
     root.iconbitmap('diva_banner.ico')
     # root.config(background='#CBCBCB')
 
+    # Create main frame where element are displayed
     mainframe = ttk.Frame(root, padding="3 3 12 12")
     mainframe.grid(column=0, row=0)
     mainframe.columnconfigure(4, weight=1)
     mainframe.rowconfigure(4, weight=1)
     mainframe.pack(expand=1, fill=BOTH)
 
+    # Create button asking user to give the path of folder containing hotspot images
     img_dir = StringVar()
     ttk.Button(mainframe, text='Image Path:', command=select_img_dir).grid(column=0, row=0, columnspan=2)
     ttk.Label(mainframe, textvariable=img_dir).grid(column=2, row=0)
 
+    # Create button asking user to give the path of folder containing gxl files
     gxl_dir = StringVar()
     ttk.Button(mainframe, text='GXL Path:', command=select_gxl_dir).grid(column=0, row=1, columnspan=2)
     ttk.Label(mainframe, textvariable=gxl_dir).grid(column=2, row=1)
@@ -97,7 +138,7 @@ if __name__ == '__main__':
     canvas_state = BooleanVar()
     canvas_state.set(False)
     canvas = Canvas(mainframe, bg='white')
-    canvas.grid(column=2, row=2)
+    canvas.grid(column=2, row=2, rowspan=4)
 
     # Button to save image
     save_button = ttk.Button(mainframe, text='Save As', command=save_img, state=DISABLED)
@@ -108,7 +149,7 @@ if __name__ == '__main__':
     transparency.set(125)
     transparency_scale = Scale(mainframe, from_=0, to=255, orient=HORIZONTAL, length=255, activebackground='red',
                                command=onselect, variable=transparency, state=DISABLED)
-    transparency_scale.grid(column=2, row=3)
+    transparency_scale.grid(column=2, row=6)
     # transparency_scale.config(state=ACTIVE)
 
     # Radio Buttons for color_by_feature
@@ -119,17 +160,47 @@ if __name__ == '__main__':
     # Scaling
     scaling = StringVar()
     scaling.set('1.0')
-    ttk.Label(mainframe, text='Scaling: ').grid(column=3, row=3)
+    ttk.Label(mainframe, text='Scaling: ').grid(column=3, row=6)
     # register function to check if the entry is a float number or not
     reg = mainframe.register(is_number)
-    scaling_entry = Entry(mainframe, textvariable=scaling, validate='key', validatecommand=(reg, '%P'))
+    scaling_entry = Entry(mainframe, textvariable=scaling, validate='key', validatecommand=(reg, '%P'), state=DISABLED)
     scaling_entry.bind('<Return>', onselect)
-    scaling_entry.grid(column=4, row=3)
+    scaling_entry.grid(column=4, row=6)
 
     # Node Style
-    # todo: node style
+    nodes = ['tumorbud', 'lymphocyte']
+    node_style = {'tumorbud': {'color': (175, 230, 25, 255), 'radius': 22},
+                  'lymphocyte': {'color': (255, 45, 240, 255), 'radius': 15},
+                  'thickness': -1}
+
+    ttk.Label(mainframe, text='Node Style').grid(column=3, row=2)
+
+    selected_node = StringVar()
+    selected_node.set(nodes[0])
+    ns_option_menu = OptionMenu(mainframe, selected_node, *nodes, command=update_ns_view)
+    ns_option_menu.grid(column=3, row=3)
+
+    ns_color_label = ttk.Label(mainframe, width=10)
+    ns_color_label.grid(column=3, row=4)
+    ns_color_label.bind('<Button-1>', update_ns_color)
+
+    ns_entry = Entry(mainframe, validate='key', validatecommand=(reg, '%P'))
+    ns_entry.grid(column=3, row=5)
+    ns_entry.bind('<Return>', update_ns_radius)
 
     # Edge Style
-    # todo: edge style
+    edge_style = {'color': (168, 50, 117, 255), 'thickness': 5}
 
+    ttk.Label(mainframe, text='Edge Style').grid(column=4, row=2)
+
+    es_color_label = ttk.Label(mainframe, width=10)
+    es_color_label.grid(column=4, row=4)
+    es_color_label.bind('<Button-1>', update_es_color)
+
+    es_entry = Entry(mainframe, validate='key', validatecommand=(reg, '%P'))
+    es_entry.grid(column=4, row=5)
+    es_entry.bind('<Return>', update_es_thickness)
+
+    update_ns_view()
+    update_es_view()
     root.mainloop()
