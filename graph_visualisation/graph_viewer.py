@@ -149,7 +149,7 @@ if __name__ == '__main__':
     scrollbar = ttk.Scrollbar(lbf, orient=VERTICAL, command=listbox.yview)
     scrollbar.pack(side=RIGHT, fill=Y)
     listbox['yscrollcommand'] = scrollbar.set
-    # listbox.bind('<<ListboxSelect>>', onselect)
+    listbox.bind('<<ListboxSelect>>', onselect)
 
     # Canvas to display images
     # canvas_state is True if the canvas is not empty
