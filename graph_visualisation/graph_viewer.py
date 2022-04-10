@@ -31,11 +31,21 @@ def load_gxl_dir(new_dir):
     # onselect()
 
 
-def save_img():
+def save_img(*args):
     new_dir = filedialog.askdirectory()
     if new_dir:
         if os.path.isdir(new_dir):
             pass
+
+
+def is_number(inp):
+    if inp == '':
+        return True
+    try:
+        float(inp)
+        return True
+    except ValueError:
+        return False
 
 
 def change_color():
@@ -43,8 +53,9 @@ def change_color():
 
 
 def onselect(*args):
+    print('onselect')
     pass
-    # todo
+    # todo: display image with graph on canvas
 
 
 if __name__ == '__main__':
@@ -72,10 +83,12 @@ if __name__ == '__main__':
     ttk.Label(mainframe, textvariable=gxl_dir).grid(column=2, row=1)
 
     # Create listbox to list all the gxl files
-    listbox = Listbox(mainframe, height=5)
-    listbox.grid(column=0, row=2)
-    scrollbar = ttk.Scrollbar(mainframe, orient=VERTICAL, command=listbox.yview)
-    scrollbar.grid(column=1, row=2)
+    lbf = Frame(mainframe)
+    lbf.grid(column=0, row=2, columnspan=2)
+    listbox = Listbox(lbf, height=10)
+    listbox.pack(side=LEFT, fill=BOTH)
+    scrollbar = ttk.Scrollbar(lbf, orient=VERTICAL, command=listbox.yview)
+    scrollbar.pack(side=RIGHT, fill=Y)
     listbox['yscrollcommand'] = scrollbar.set
     # listbox.bind('<<ListboxSelect>>', onselect)
 
@@ -90,17 +103,33 @@ if __name__ == '__main__':
     save_button = ttk.Button(mainframe, text='Save As', command=save_img, state=DISABLED)
     save_button.grid(column=0, row=3, columnspan=2)
 
-    # Radio Buttons for color_by_feature
-    feature = StringVar()
-    feature.set('None')
-    # todo
-
     # Scale for transparency
     transparency = IntVar()
     transparency.set(125)
-    transparency_scale = Scale(mainframe, from_=0, to=255, orient=HORIZONTAL, length=255,
+    transparency_scale = Scale(mainframe, from_=0, to=255, orient=HORIZONTAL, length=255, activebackground='red',
                                command=onselect, variable=transparency, state=DISABLED)
     transparency_scale.grid(column=2, row=3)
     # transparency_scale.config(state=ACTIVE)
-    
+
+    # Radio Buttons for color_by_feature
+    feature = StringVar()
+    feature.set('None')
+    # todo: color_by_feature
+
+    # Scaling
+    scaling = StringVar()
+    scaling.set('1.0')
+    ttk.Label(mainframe, text='Scaling: ').grid(column=3, row=3)
+    # register function to check if the entry is a float number or not
+    reg = mainframe.register(is_number)
+    scaling_entry = Entry(mainframe, textvariable=scaling, validate='key', validatecommand=(reg, '%P'))
+    scaling_entry.bind('<Return>', onselect)
+    scaling_entry.grid(column=4, row=3)
+
+    # Node Style
+    # todo: node style
+
+    # Edge Style
+    # todo: edge style
+
     root.mainloop()
