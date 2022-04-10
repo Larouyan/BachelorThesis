@@ -42,7 +42,7 @@ def change_color():
     return colorchooser.askcolor()
 
 
-def onselect():
+def onselect(*args):
     pass
     # todo
 
@@ -59,9 +59,9 @@ if __name__ == '__main__':
 
     mainframe = ttk.Frame(root, padding="3 3 12 12")
     mainframe.grid(column=0, row=0)
-    mainframe.columnconfigure(3, weight=1)
-    mainframe.rowconfigure(3, weight=1)
-    mainframe.pack(expand=1, fill='both')
+    mainframe.columnconfigure(4, weight=1)
+    mainframe.rowconfigure(4, weight=1)
+    mainframe.pack(expand=1, fill=BOTH)
 
     img_dir = StringVar()
     ttk.Button(mainframe, text='Image Path:', command=select_img_dir).grid(column=0, row=0, columnspan=2)
@@ -91,7 +91,16 @@ if __name__ == '__main__':
     save_button.grid(column=0, row=3, columnspan=2)
 
     # Radio Buttons for color_by_feature
-    feature = StringVar
-    
+    feature = StringVar()
+    feature.set('None')
+    # todo
 
+    # Scale for transparency
+    transparency = IntVar()
+    transparency.set(125)
+    transparency_scale = Scale(mainframe, from_=0, to=255, orient=HORIZONTAL, length=255,
+                               command=onselect, variable=transparency, state=DISABLED)
+    transparency_scale.grid(column=2, row=3)
+    # transparency_scale.config(state=ACTIVE)
+    
     root.mainloop()
