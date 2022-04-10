@@ -48,17 +48,31 @@ def is_number(inp):
         return False
 
 
+def is_int(inp):
+    if inp == '':
+        return True
+    try:
+        int(inp)
+        return True
+    except ValueError:
+        return False
+
+
 def update_ns_view(*args):
     # Update node style color label
     ns_color_label['background'] = '#{:02x}{:02x}{:02x}'.format(*node_style[selected_node.get()]['color'])
     # Update node style radius entry
     ns_entry.delete(0, END)
-    ns_entry.insert(0, node_style[selected_node.get()]['radius'])
+    ns_entry.insert(0, str(node_style[selected_node.get()]['radius']))
 
 
 def update_ns_radius(*args):
-    node_style[selected_node.get()]['radius'] = ns_entry.get()
-    onselect()
+    if ns_entry.get() == '':
+        # If user pass no number for the radius -> rewrite previous one
+        ns_entry.insert(0, str(node_style[selected_node.get()]['radius']))
+    else:
+        node_style[selected_node.get()]['radius'] = int(ns_entry.get())
+        onselect()
 
 
 def update_ns_color(*args):
@@ -78,8 +92,12 @@ def update_es_view(*args):
 
 
 def update_es_thickness(*args):
-    edge_style['thickness'] = int(es_entry.get())
-    onselect()
+    if es_entry.get() == '':
+        # if user pass no number for thickness -> rewrite previous one
+        es_entry.insert(0, str(edge_style['thickness']))
+    else:
+        edge_style['thickness'] = int(es_entry.get())
+        onselect()
 
 
 def update_es_color(*args):
@@ -138,7 +156,7 @@ if __name__ == '__main__':
     canvas_state = BooleanVar()
     canvas_state.set(False)
     canvas = Canvas(mainframe, bg='white')
-    canvas.grid(column=2, row=2, rowspan=4)
+    canvas.grid(column=2, row=2, rowspan=6, columnspan=2)
 
     # Button to save image
     save_button = ttk.Button(mainframe, text='Save As', command=save_img, state=DISABLED)
@@ -149,7 +167,7 @@ if __name__ == '__main__':
     transparency.set(125)
     transparency_scale = Scale(mainframe, from_=0, to=255, orient=HORIZONTAL, length=255, activebackground='red',
                                command=onselect, variable=transparency, state=DISABLED)
-    transparency_scale.grid(column=2, row=6)
+    transparency_scale.grid(column=2, row=8, columnspan=2)
     # transparency_scale.config(state=ACTIVE)
 
     # Radio Buttons for color_by_feature
@@ -160,12 +178,12 @@ if __name__ == '__main__':
     # Scaling
     scaling = StringVar()
     scaling.set('1.0')
-    ttk.Label(mainframe, text='Scaling: ').grid(column=3, row=6)
+    ttk.Label(mainframe, text='Scaling: ').grid(column=2, row=9)
     # register function to check if the entry is a float number or not
     reg = mainframe.register(is_number)
     scaling_entry = Entry(mainframe, textvariable=scaling, validate='key', validatecommand=(reg, '%P'), state=DISABLED)
     scaling_entry.bind('<Return>', onselect)
-    scaling_entry.grid(column=4, row=6)
+    scaling_entry.grid(column=3, row=9)
 
     # Node Style
     nodes = ['tumorbud', 'lymphocyte']
@@ -173,32 +191,38 @@ if __name__ == '__main__':
                   'lymphocyte': {'color': (255, 45, 240, 255), 'radius': 15},
                   'thickness': -1}
 
-    ttk.Label(mainframe, text='Node Style').grid(column=3, row=2)
+    ttk.Label(mainframe, text='Node Style').grid(column=4, row=2)
 
     selected_node = StringVar()
     selected_node.set(nodes[0])
     ns_option_menu = OptionMenu(mainframe, selected_node, *nodes, command=update_ns_view)
-    ns_option_menu.grid(column=3, row=3)
+    ns_option_menu.grid(column=4, row=3)
 
+    ttk.Label(mainframe, text='Node Color').grid(column=4, row=4)
     ns_color_label = ttk.Label(mainframe, width=10)
-    ns_color_label.grid(column=3, row=4)
+    ns_color_label.grid(column=4, row=5)
     ns_color_label.bind('<Button-1>', update_ns_color)
 
-    ns_entry = Entry(mainframe, validate='key', validatecommand=(reg, '%P'))
-    ns_entry.grid(column=3, row=5)
+    ttk.Label(mainframe, text='Node Radius').grid(column=4, row=6)
+    # register function to check if the entry is a float number or not
+    reg_is_int = mainframe.register(is_int)
+    ns_entry = Entry(mainframe, validate='key', validatecommand=(reg_is_int, '%P'))
+    ns_entry.grid(column=4, row=7)
     ns_entry.bind('<Return>', update_ns_radius)
 
     # Edge Style
     edge_style = {'color': (168, 50, 117, 255), 'thickness': 5}
 
-    ttk.Label(mainframe, text='Edge Style').grid(column=4, row=2)
+    ttk.Label(mainframe, text='Edge Style').grid(column=5, row=2)
 
+    ttk.Label(mainframe, text='Edge Color').grid(column=5, row=4)
     es_color_label = ttk.Label(mainframe, width=10)
-    es_color_label.grid(column=4, row=4)
+    es_color_label.grid(column=5, row=5)
     es_color_label.bind('<Button-1>', update_es_color)
 
-    es_entry = Entry(mainframe, validate='key', validatecommand=(reg, '%P'))
-    es_entry.grid(column=4, row=5)
+    ttk.Label(mainframe, text='Edge Thickness').grid(column=5, row=6)
+    es_entry = Entry(mainframe, validate='key', validatecommand=(reg_is_int, '%P'))
+    es_entry.grid(column=5, row=7)
     es_entry.bind('<Return>', update_es_thickness)
 
     update_ns_view()
