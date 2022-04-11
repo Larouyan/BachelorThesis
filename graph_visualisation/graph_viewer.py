@@ -3,9 +3,12 @@ from tkinter import colorchooser, filedialog, ttk
 from PIL import ImageTk, Image
 
 from graph_plotter import graph_plotter
+from util.draw_graph import GraphDrawer
 
 import os
 import re
+
+graph_img = GraphDrawer
 
 
 def select_img_dir(*args):
@@ -31,14 +34,14 @@ def load_gxl_dir(new_dir):
             if os.path.isfile(os.path.join(new_dir, file)):
                 listbox.insert(END, file.rsplit('.', 1)[0])
     listbox.select_set(0)
-    # onselect()
+    onselect()
 
 
 def save_img(*args):
-    new_dir = filedialog.askdirectory()
-    if new_dir:
-        if os.path.isdir(new_dir):
-            pass
+    output_path = filedialog.askdirectory()
+    if output_path:
+        if os.path.isdir(output_path):
+            graph_img.save(output_path)
 
 
 def is_number(inp):
@@ -112,6 +115,7 @@ def update_es_color(*args):
 
 
 def disable_customisation():
+    save_button['state'] = DISABLED
     for child in bottom_canvas_frame.winfo_children() + right_canvas_frame.winfo_children():
         child['state'] = DISABLED
         if child is ns_color_label or es_color_label:
@@ -119,6 +123,7 @@ def disable_customisation():
 
 
 def enable_customisation():
+    save_button['state'] = NORMAL
     for child in bottom_canvas_frame.winfo_children() + right_canvas_frame.winfo_children():
         child['state'] = NORMAL
         if child is ns_color_label:
@@ -128,7 +133,7 @@ def enable_customisation():
 
 
 def onselect(*args):
-    print('onselect')
+    global graph_img
     if img_dir.get() != '':
         canvas.delete("all")
         index = int(listbox.curselection()[0])
@@ -188,7 +193,7 @@ if __name__ == '__main__':
     # Create listbox to list all the gxl files
     lbf = ttk.Frame(mainframe)
     lbf.grid(column=0, row=2, columnspan=2)
-    listbox = Listbox(lbf, height=10)
+    listbox = Listbox(lbf, height=15)
     listbox.pack(side=LEFT, fill=BOTH)
     scrollbar = ttk.Scrollbar(lbf, orient=VERTICAL, command=listbox.yview)
     scrollbar.pack(side=RIGHT, fill=Y)
@@ -196,25 +201,23 @@ if __name__ == '__main__':
     listbox.bind('<<ListboxSelect>>', onselect)
 
     # Canvas to display images
-    # canvas_state is True if the canvas is not empty
-    canvas_state = BooleanVar()
-    canvas_state.set(False)
     canvas = Canvas(mainframe, bg='white')
     canvas.grid(column=2, row=2, rowspan=6, columnspan=2)
 
+    # Button to save image
+    save_button = ttk.Button(mainframe, text='Save As', command=save_img)
+    save_button.grid(column=0, row=10, columnspan=2)
+
     # Customisation on the left of the canvas
     bottom_canvas_frame = Frame(mainframe)
-    bottom_canvas_frame.grid(column=0, row=8, columnspan=4, rowspan=4)
-    # Button to save image
-    save_button = ttk.Button(bottom_canvas_frame, text='Save As', command=save_img)
-    save_button.grid(column=0, row=0, columnspan=2)
+    bottom_canvas_frame.grid(column=2, row=9, columnspan=2, rowspan=4)
 
     # Transparency
     transparency = IntVar()
     transparency.set(125)
     transparency_scale = Scale(bottom_canvas_frame, from_=0, to=255, orient=HORIZONTAL, length=255,
                                activebackground='red', command=onselect, variable=transparency)
-    transparency_scale.grid(column=2, row=0, columnspan=2)
+    transparency_scale.grid(column=0, row=0, columnspan=2)
 
     # Color_by_feature
     color_by_feature = StringVar()
@@ -224,16 +227,15 @@ if __name__ == '__main__':
     # Scaling
     scaling = StringVar()
     scaling.set('1.0')
-    ttk.Label(bottom_canvas_frame, text='Scaling: ').grid(column=2, row=1)
+    ttk.Label(bottom_canvas_frame, text='Scaling: ').grid(column=0, row=1)
     # register function to check if the entry is a float number or not
     reg_is_number = mainframe.register(is_number)
     scaling_entry = Entry(bottom_canvas_frame, textvariable=scaling, validate='key',
                           validatecommand=(reg_is_number, '%P'))
-    scaling_entry.grid(column=3, row=1)
+    scaling_entry.grid(column=1, row=1)
     scaling_entry.bind('<Return>', onselect)
 
     # Customisation on the right of the canvas
-    # todo: test if I can resize proportionally to canvas width/height
     right_canvas_frame = ttk.Frame(mainframe)
     right_canvas_frame.grid(column=4, row=2, columnspan=2, rowspan=6)
     # Node Style
