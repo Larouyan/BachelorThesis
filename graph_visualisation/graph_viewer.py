@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import colorchooser, filedialog, ttk
 from PIL import ImageTk, Image
 
+from graph_plotter import graph_plotter
+
 import os
 import re
 
@@ -135,17 +137,23 @@ def onselect(*args):
         img_filepath = search_img_filepath(gxl_filename)
         if img_filepath:
             enable_customisation()
+            # todo: add color_by_feature
+            graph_img = graph_plotter(gxl_filepath=gxl_filepath, img_filepath=img_filepath, color_by_feature=None,
+                                      node_style=node_style, edge_style=edge_style,
+                                      scaling=scaling.get(), transparency=transparency.get())
+            img = graph_img.get_image()
             # todo: display image with graph on canvas
         else:
             disable_customisation()
-            # todo: inform user that no image was found
+            canvas.create_text(canvas.winfo_width() / 2, canvas.winfo_height() / 2,
+                               text=f'No image found for the gxl file {gxl_filename}')
 
 
 def search_img_filepath(gxl_filename):
     extensions = ('png', 'bmp', 'jpg', 'jpeg', 'gif')
     for ext in extensions:
         for img in os.listdir(img_dir.get()):
-            if re.search(r'.*' + re.escape(gxl_filename) + r'.*' + re.escape(ext), img):
+            if re.search(r'.*' + re.escape(gxl_filename) + r'.*' + re.escape(ext), img):  # todo: test if this regex is enough strict
                 return os.path.join(img_dir.get(), img)
     return None
 
@@ -201,16 +209,16 @@ if __name__ == '__main__':
     save_button = ttk.Button(bottom_canvas_frame, text='Save As', command=save_img)
     save_button.grid(column=0, row=0, columnspan=2)
 
-    # Scale for transparency
+    # Transparency
     transparency = IntVar()
     transparency.set(125)
     transparency_scale = Scale(bottom_canvas_frame, from_=0, to=255, orient=HORIZONTAL, length=255,
                                activebackground='red', command=onselect, variable=transparency)
     transparency_scale.grid(column=2, row=0, columnspan=2)
 
-    # Radio Buttons for color_by_feature
-    feature = StringVar()
-    feature.set('None')
+    # Color_by_feature
+    color_by_feature = StringVar()
+    color_by_feature.set('None')
     # todo: color_by_feature
 
     # Scaling
@@ -225,6 +233,7 @@ if __name__ == '__main__':
     scaling_entry.bind('<Return>', onselect)
 
     # Customisation on the right of the canvas
+    # todo: test if I can resize proportionally to canvas width/height
     right_canvas_frame = ttk.Frame(mainframe)
     right_canvas_frame.grid(column=4, row=2, columnspan=2, rowspan=6)
     # Node Style
@@ -270,6 +279,6 @@ if __name__ == '__main__':
     update_ns_view()
     update_es_view()
     # disable customisation when there is no picture on the canvas
-    # disable_customisation()
+    disable_customisation()
 
     root.mainloop()
