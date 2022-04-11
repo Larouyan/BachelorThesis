@@ -108,9 +108,24 @@ def update_es_color(*args):
         onselect()
 
 
+def disable_customisation():
+    for child in bottom_canvas_frame.winfo_children() + right_canvas_frame.winfo_children():
+        child['state'] = DISABLED
+        if child is ns_color_label or es_color_label:
+            child.unbind('<Button-1>')
+
+
+def enable_customisation():
+    for child in bottom_canvas_frame.winfo_children() + right_canvas_frame.winfo_children():
+        child['state'] = NORMAL
+        if child is ns_color_label:
+            child.bind('<Button-1>', update_ns_color)
+        elif child is es_color_label:
+            child.bind('<Button-1>', update_es_color)
+
+
 def onselect(*args):
     print('onselect')
-    pass
     # todo: display image with graph on canvas
 
 
@@ -127,8 +142,8 @@ if __name__ == '__main__':
     # Create main frame where element are displayed
     mainframe = ttk.Frame(root, padding="3 3 12 12")
     mainframe.grid(column=0, row=0)
-    mainframe.columnconfigure(4, weight=1)
-    mainframe.rowconfigure(4, weight=1)
+    mainframe.columnconfigure(10, weight=1)
+    mainframe.rowconfigure(10, weight=1)
     mainframe.pack(expand=1, fill=BOTH)
 
     # Create button asking user to give the path of folder containing hotspot images
@@ -142,7 +157,7 @@ if __name__ == '__main__':
     ttk.Label(mainframe, textvariable=gxl_dir).grid(column=2, row=1)
 
     # Create listbox to list all the gxl files
-    lbf = Frame(mainframe)
+    lbf = ttk.Frame(mainframe)
     lbf.grid(column=0, row=2, columnspan=2)
     listbox = Listbox(lbf, height=10)
     listbox.pack(side=LEFT, fill=BOTH)
@@ -158,17 +173,19 @@ if __name__ == '__main__':
     canvas = Canvas(mainframe, bg='white')
     canvas.grid(column=2, row=2, rowspan=6, columnspan=2)
 
+    # Customisation on the left of the canvas
+    bottom_canvas_frame = Frame(mainframe)
+    bottom_canvas_frame.grid(column=0, row=8, columnspan=4, rowspan=4)
     # Button to save image
-    save_button = ttk.Button(mainframe, text='Save As', command=save_img, state=DISABLED)
-    save_button.grid(column=0, row=3, columnspan=2)
+    save_button = ttk.Button(bottom_canvas_frame, text='Save As', command=save_img)
+    save_button.grid(column=0, row=0, columnspan=2)
 
     # Scale for transparency
     transparency = IntVar()
     transparency.set(125)
-    transparency_scale = Scale(mainframe, from_=0, to=255, orient=HORIZONTAL, length=255, activebackground='red',
-                               command=onselect, variable=transparency, state=DISABLED)
-    transparency_scale.grid(column=2, row=8, columnspan=2)
-    # transparency_scale.config(state=ACTIVE)
+    transparency_scale = Scale(bottom_canvas_frame, from_=0, to=255, orient=HORIZONTAL, length=255,
+                               activebackground='red', command=onselect, variable=transparency)
+    transparency_scale.grid(column=2, row=0, columnspan=2)
 
     # Radio Buttons for color_by_feature
     feature = StringVar()
@@ -178,53 +195,60 @@ if __name__ == '__main__':
     # Scaling
     scaling = StringVar()
     scaling.set('1.0')
-    ttk.Label(mainframe, text='Scaling: ').grid(column=2, row=9)
+    ttk.Label(bottom_canvas_frame, text='Scaling: ').grid(column=2, row=1)
     # register function to check if the entry is a float number or not
-    reg = mainframe.register(is_number)
-    scaling_entry = Entry(mainframe, textvariable=scaling, validate='key', validatecommand=(reg, '%P'), state=DISABLED)
+    reg_is_number = mainframe.register(is_number)
+    scaling_entry = Entry(bottom_canvas_frame, textvariable=scaling, validate='key',
+                          validatecommand=(reg_is_number, '%P'))
+    scaling_entry.grid(column=3, row=1)
     scaling_entry.bind('<Return>', onselect)
-    scaling_entry.grid(column=3, row=9)
 
+    # Customisation on the right of the canvas
+    right_canvas_frame = ttk.Frame(mainframe)
+    right_canvas_frame.grid(column=4, row=2, columnspan=2, rowspan=6)
     # Node Style
     nodes = ['tumorbud', 'lymphocyte']
     node_style = {'tumorbud': {'color': (175, 230, 25, 255), 'radius': 22},
                   'lymphocyte': {'color': (255, 45, 240, 255), 'radius': 15},
                   'thickness': -1}
 
-    ttk.Label(mainframe, text='Node Style').grid(column=4, row=2)
+    ttk.Label(right_canvas_frame, text='Node Style').grid(column=0, row=0)
 
     selected_node = StringVar()
     selected_node.set(nodes[0])
-    ns_option_menu = OptionMenu(mainframe, selected_node, *nodes, command=update_ns_view)
-    ns_option_menu.grid(column=4, row=3)
+    ns_option_menu = OptionMenu(right_canvas_frame, selected_node, *nodes, command=update_ns_view)
+    ns_option_menu.grid(column=0, row=1)
 
-    ttk.Label(mainframe, text='Node Color').grid(column=4, row=4)
-    ns_color_label = ttk.Label(mainframe, width=10)
-    ns_color_label.grid(column=4, row=5)
+    ttk.Label(right_canvas_frame, text='Node Color').grid(column=0, row=2)
+    ns_color_label = ttk.Label(right_canvas_frame, width=10)
+    ns_color_label.grid(column=0, row=3)
     ns_color_label.bind('<Button-1>', update_ns_color)
 
-    ttk.Label(mainframe, text='Node Radius').grid(column=4, row=6)
+    ttk.Label(right_canvas_frame, text='Node Radius').grid(column=0, row=4)
     # register function to check if the entry is a float number or not
     reg_is_int = mainframe.register(is_int)
-    ns_entry = Entry(mainframe, validate='key', validatecommand=(reg_is_int, '%P'))
-    ns_entry.grid(column=4, row=7)
+    ns_entry = Entry(right_canvas_frame, validate='key', validatecommand=(reg_is_int, '%P'))
+    ns_entry.grid(column=0, row=5)
     ns_entry.bind('<Return>', update_ns_radius)
 
     # Edge Style
     edge_style = {'color': (168, 50, 117, 255), 'thickness': 5}
 
-    ttk.Label(mainframe, text='Edge Style').grid(column=5, row=2)
+    ttk.Label(right_canvas_frame, text='Edge Style').grid(column=1, row=0)
 
-    ttk.Label(mainframe, text='Edge Color').grid(column=5, row=4)
-    es_color_label = ttk.Label(mainframe, width=10)
-    es_color_label.grid(column=5, row=5)
+    ttk.Label(right_canvas_frame, text='Edge Color').grid(column=1, row=2)
+    es_color_label = ttk.Label(right_canvas_frame, width=10)
+    es_color_label.grid(column=1, row=3)
     es_color_label.bind('<Button-1>', update_es_color)
 
-    ttk.Label(mainframe, text='Edge Thickness').grid(column=5, row=6)
-    es_entry = Entry(mainframe, validate='key', validatecommand=(reg_is_int, '%P'))
-    es_entry.grid(column=5, row=7)
+    ttk.Label(right_canvas_frame, text='Edge Thickness').grid(column=1, row=4)
+    es_entry = Entry(right_canvas_frame, validate='key', validatecommand=(reg_is_int, '%P'))
+    es_entry.grid(column=1, row=5)
     es_entry.bind('<Return>', update_es_thickness)
 
     update_ns_view()
     update_es_view()
+    # disable customisation when there is no picture on the canvas
+    disable_customisation()
+
     root.mainloop()
