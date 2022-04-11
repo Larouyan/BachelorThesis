@@ -82,6 +82,7 @@ def update_ns_radius(*args):
 
 
 def update_ns_color(*args):
+    # todo: rgb -> rgba
     new_color = colorchooser.askcolor()[0]
     if new_color:
         node_style[selected_node.get()]['color'] = new_color
@@ -107,6 +108,7 @@ def update_es_thickness(*args):
 
 
 def update_es_color(*args):
+    # todo: rgb -> rgba
     new_color = colorchooser.askcolor()[0]
     if new_color:
         edge_style['color'] = new_color
@@ -137,17 +139,22 @@ def onselect(*args):
     if img_dir.get() != '':
         canvas.delete("all")
         index = int(listbox.curselection()[0])
+        # todo: correct bug if listbox is unselected
         gxl_filename = listbox.get(index)
         gxl_filepath = os.path.join(gxl_dir.get(), gxl_filename + '.gxl')
         img_filepath = search_img_filepath(gxl_filename)
         if img_filepath:
             enable_customisation()
             # todo: add color_by_feature
-            graph_img = graph_plotter(gxl_filepath=gxl_filepath, img_filepath=img_filepath, color_by_feature=None,
+            graph_img = graph_plotter(gxl_filepath=gxl_filepath, img_filepath=img_filepath, color_by_feature='type',
                                       node_style=node_style, edge_style=edge_style,
-                                      scaling=scaling.get(), transparency=transparency.get())
+                                      scaling=float(scaling.get()), transparency=transparency.get())
             img = graph_img.get_image()
-            # todo: display image with graph on canvas
+
+            photo_img = ImageTk.PhotoImage(Image.fromarray(img).resize((canvas.winfo_width(), canvas.winfo_height()),
+                                                                       Image.ANTIALIAS))
+            canvas.image = photo_img
+            canvas.create_image(0, 0, image=photo_img, anchor=NW)
         else:
             disable_customisation()
             canvas.create_text(canvas.winfo_width() / 2, canvas.winfo_height() / 2,
@@ -159,7 +166,7 @@ def search_img_filepath(gxl_filename):
     for ext in extensions:
         for img in os.listdir(img_dir.get()):
             if re.search(r'.*' + re.escape(gxl_filename) + r'.*' + re.escape(ext), img):  # todo: test if this regex is enough strict
-                return os.path.join(img_dir.get(), img)
+                return os.path.join(img_dir.get(), img).replace('\\', '/')
     return None
 
 
@@ -201,7 +208,7 @@ if __name__ == '__main__':
     listbox.bind('<<ListboxSelect>>', onselect)
 
     # Canvas to display images
-    canvas = Canvas(mainframe, bg='white')
+    canvas = Canvas(mainframe, width=512, height=512)
     canvas.grid(column=2, row=2, rowspan=6, columnspan=2)
 
     # Button to save image
