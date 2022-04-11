@@ -3,6 +3,7 @@ from tkinter import colorchooser, filedialog, ttk
 from PIL import ImageTk, Image
 
 import os
+import re
 
 
 def select_img_dir(*args):
@@ -126,7 +127,27 @@ def enable_customisation():
 
 def onselect(*args):
     print('onselect')
-    # todo: display image with graph on canvas
+    if img_dir.get() != '':
+        canvas.delete("all")
+        index = int(listbox.curselection()[0])
+        gxl_filename = listbox.get(index)
+        gxl_filepath = os.path.join(gxl_dir.get(), gxl_filename + '.gxl')
+        img_filepath = search_img_filepath(gxl_filename)
+        if img_filepath:
+            enable_customisation()
+            # todo: display image with graph on canvas
+        else:
+            disable_customisation()
+            # todo: inform user that no image was found
+
+
+def search_img_filepath(gxl_filename):
+    extensions = ('png', 'bmp', 'jpg', 'jpeg', 'gif')
+    for ext in extensions:
+        for img in os.listdir(img_dir.get()):
+            if re.search(r'.*' + re.escape(gxl_filename) + r'.*' + re.escape(ext), img):
+                return os.path.join(img_dir.get(), img)
+    return None
 
 
 if __name__ == '__main__':
@@ -249,6 +270,6 @@ if __name__ == '__main__':
     update_ns_view()
     update_es_view()
     # disable customisation when there is no picture on the canvas
-    disable_customisation()
+    # disable_customisation()
 
     root.mainloop()
