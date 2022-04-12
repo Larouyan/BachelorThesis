@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 
 from graph_plotter import graph_plotter
 from util.draw_graph import GraphDrawer
+from util.default_config import node_style, edge_style, nodes
 
 import os
 import re
@@ -33,8 +34,9 @@ def load_gxl_dir(new_dir):
         if file.lower().endswith('.gxl'):
             if os.path.isfile(os.path.join(new_dir, file)):
                 listbox.insert(END, file.rsplit('.', 1)[0])
-    listbox.select_set(0)
-    onselect()
+    if listbox.size() > 0:
+        listbox.select_set(0)
+        onselect()
 
 
 def save_img(*args):
@@ -150,9 +152,13 @@ def onselect(*args):
         if img_filepath:
             if os.path.isfile(img_filepath) and os.path.isfile(gxl_filepath):
                 enable_customisation()
-                # todo: add color_by_feature
+                if color_by_feature.get() == 'None':
+                    col_by_f = None
+                else:
+                    col_by_f = color_by_feature.get()
+
                 graph_img = graph_plotter(gxl_filepath=gxl_filepath, img_filepath=img_filepath,
-                                          color_by_feature='type', node_style=node_style, edge_style=edge_style,
+                                          color_by_feature=col_by_f, node_style=node_style, edge_style=edge_style,
                                           scaling=float(scaling.get()), transparency=transparency.get())
                 img = graph_img.get_image()
 
@@ -170,8 +176,9 @@ def search_img_filepath(gxl_filename):
     extensions = ('png', 'bmp', 'jpg', 'jpeg', 'gif')
     for ext in extensions:
         for img in os.listdir(img_dir.get()):
-            if re.search(r'.*' + re.escape(gxl_filename) + r'.*' + re.escape(ext), img):  # todo: test if this regex is enough strict
-                return os.path.join(img_dir.get(), img).replace('\\', '/')
+            if re.match(r'.*' + re.escape(gxl_filename) + r'.*', img):  # todo: regex is enough strict ?
+                if gxl_filename.endswith(ext):
+                    return os.path.join(img_dir.get(), img)
     return None
 
 
@@ -213,7 +220,7 @@ if __name__ == '__main__':
     listbox.bind('<<ListboxSelect>>', onselect)
 
     # Canvas to display images
-    canvas = Canvas(mainframe, width=512, height=512)
+    canvas = Canvas(mainframe, width=512, height=512, bg='white')
     canvas.grid(column=2, row=2, rowspan=6, columnspan=2)
 
     # Button to save image
@@ -222,7 +229,7 @@ if __name__ == '__main__':
 
     # Customisation on the left of the canvas
     bottom_canvas_frame = Frame(mainframe)
-    bottom_canvas_frame.grid(column=2, row=9, columnspan=2, rowspan=4)
+    bottom_canvas_frame.grid(column=2, row=9, columnspan=2, rowspan=5)
 
     # Transparency
     transparency = IntVar()
@@ -230,11 +237,6 @@ if __name__ == '__main__':
     transparency_scale = Scale(bottom_canvas_frame, from_=0, to=255, orient=HORIZONTAL, length=255,
                                activebackground='red', command=onselect, variable=transparency)
     transparency_scale.grid(column=0, row=0, columnspan=2)
-
-    # Color_by_feature
-    color_by_feature = StringVar()
-    color_by_feature.set('None')
-    # todo: color_by_feature
 
     # Scaling
     scaling = StringVar()
@@ -247,16 +249,23 @@ if __name__ == '__main__':
     scaling_entry.grid(column=1, row=1)
     scaling_entry.bind('<Return>', onselect)
 
+    # Color_by_feature
+    color_by_feature = StringVar()
+    color_by_feature.set('type')
+    ttk.Label(bottom_canvas_frame, text='Color by Feature').grid(column=0, row=2, columnspan=2)
+    radio_button1 = Radiobutton(bottom_canvas_frame, variable=color_by_feature,
+                                text='None', value='None', command=onselect)
+    radio_button1.grid(column=0, row=3, columnspan=2)
+    radio_button2 = Radiobutton(bottom_canvas_frame, variable=color_by_feature,
+                                text='Type', value='type', command=onselect)
+    radio_button2.grid(column=0, row=4, columnspan=3)
+
     # Customisation on the right of the canvas
     right_canvas_frame = ttk.Frame(mainframe)
     right_canvas_frame.grid(column=4, row=2, columnspan=2, rowspan=6)
-    # Node Style
-    nodes = ['tumorbud', 'lymphocyte']
-    node_style = {'tumorbud': {'color': (175, 230, 25, 255), 'radius': 22},
-                  'lymphocyte': {'color': (255, 45, 240, 255), 'radius': 15},
-                  'thickness': -1}
 
-    ttk.Label(right_canvas_frame, text='Node Style').grid(column=0, row=0)
+    # Node Style
+    ttk.Label(right_canvas_frame, text='Node Style', font=('Times', 18, 'bold')).grid(column=0, row=0)
 
     selected_node = StringVar()
     selected_node.set(nodes[0])
@@ -276,9 +285,7 @@ if __name__ == '__main__':
     ns_entry.bind('<Return>', update_ns_radius)
 
     # Edge Style
-    edge_style = {'color': (168, 50, 117, 255), 'thickness': 5}
-
-    ttk.Label(right_canvas_frame, text='Edge Style').grid(column=1, row=0)
+    ttk.Label(right_canvas_frame, text='Edge Style', font=('Times', 18, 'bold')).grid(column=1, row=0)
 
     ttk.Label(right_canvas_frame, text='Edge Color').grid(column=1, row=2)
     es_color_label = ttk.Label(right_canvas_frame, width=10)

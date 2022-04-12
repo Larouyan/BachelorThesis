@@ -104,9 +104,10 @@ class GraphDrawer:
                                  color=self.node_style[feature]['color'],
                                  thickness=self.node_style['thickness'])
         else:
+            default = {'color': (47, 130, 224, 255), 'radius': 20, 'thickness': -1}
             for i, point in points.items():
-                img = cv2.circle(img, point, radius=self.node_style['radius'], color=self.node_style['color'],
-                                 thickness=self.node_style['thickness'])
+                img = cv2.circle(img, point, radius=default['radius'], color=default['color'],
+                                 thickness=default['thickness'])
 
         return img
 
