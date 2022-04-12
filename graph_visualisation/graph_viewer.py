@@ -82,10 +82,10 @@ def update_ns_radius(*args):
 
 
 def update_ns_color(*args):
-    # todo: rgb -> rgba
     new_color = colorchooser.askcolor()[0]
     if new_color:
-        node_style[selected_node.get()]['color'] = new_color
+        r, g, b = new_color
+        node_style[selected_node.get()]['color'] = (r, g, b, 255)
         update_ns_view()
         onselect()
 
@@ -108,10 +108,10 @@ def update_es_thickness(*args):
 
 
 def update_es_color(*args):
-    # todo: rgb -> rgba
     new_color = colorchooser.askcolor()[0]
     if new_color:
-        edge_style['color'] = new_color
+        r, g, b = new_color
+        edge_style['color'] = (r, g, b, 255)
         update_es_view()
         onselect()
 
@@ -138,23 +138,28 @@ def onselect(*args):
     global graph_img
     if img_dir.get() != '':
         canvas.delete("all")
-        index = int(listbox.curselection()[0])
-        # todo: correct bug if listbox is unselected
-        gxl_filename = listbox.get(index)
+        try:
+            index = int(listbox.curselection()[0])
+            gxl_filename = listbox.get(index)
+        except IndexError:
+            # If listbox is unselected then take the previous gxl file which was selected
+            gxl_filename = graph_img.graph.file_id
+
         gxl_filepath = os.path.join(gxl_dir.get(), gxl_filename + '.gxl')
         img_filepath = search_img_filepath(gxl_filename)
         if img_filepath:
-            enable_customisation()
-            # todo: add color_by_feature
-            graph_img = graph_plotter(gxl_filepath=gxl_filepath, img_filepath=img_filepath, color_by_feature='type',
-                                      node_style=node_style, edge_style=edge_style,
-                                      scaling=float(scaling.get()), transparency=transparency.get())
-            img = graph_img.get_image()
+            if os.path.isfile(img_filepath) and os.path.isfile(gxl_filepath):
+                enable_customisation()
+                # todo: add color_by_feature
+                graph_img = graph_plotter(gxl_filepath=gxl_filepath, img_filepath=img_filepath,
+                                          color_by_feature='type', node_style=node_style, edge_style=edge_style,
+                                          scaling=float(scaling.get()), transparency=transparency.get())
+                img = graph_img.get_image()
 
-            photo_img = ImageTk.PhotoImage(Image.fromarray(img).resize((canvas.winfo_width(), canvas.winfo_height()),
-                                                                       Image.ANTIALIAS))
-            canvas.image = photo_img
-            canvas.create_image(0, 0, image=photo_img, anchor=NW)
+                photo_img = ImageTk.PhotoImage(Image.fromarray(img).resize((canvas.winfo_width(), canvas.winfo_height()),
+                                                                           Image.ANTIALIAS))
+                canvas.image = photo_img
+                canvas.create_image(0, 0, image=photo_img, anchor=NW)
         else:
             disable_customisation()
             canvas.create_text(canvas.winfo_width() / 2, canvas.winfo_height() / 2,
