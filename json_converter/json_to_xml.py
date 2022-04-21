@@ -18,18 +18,18 @@ def convert_json_to_xml(files_to_process, hotspot_folder, output_folder):
     colors = {'Tumor': '#4d66cc', 'Extraepithelial CD8+ Cell': 'magenta', 'Intraepithelial CD8+ Cell': 'magenta',
               'Center of Mass': 'black', 'hotspot': '#64FE2E'}
 
-    # initiate xml_tree
-    xml_tree = ET.Element('ASAP_Annotations')
-    # Make the annotations and coordinates
-    xml_annotations = ET.SubElement(xml_tree, 'Annotations')
-    # Make the groups
-    xml_annotation_groups = ET.SubElement(xml_tree, 'AnnotationGroups')
-
     hotspot_name = [os.path.splitext(os.path.basename(f))[0] for f in hotspot_folder]
 
     for file_to_process in files_to_process:
+        # initiate xml_tree
+        xml_tree = ET.Element('ASAP_Annotations')
+        # Make the annotations and coordinates
+        xml_annotations = ET.SubElement(xml_tree, 'Annotations')
+        # Make the groups
+        xml_annotation_groups = ET.SubElement(xml_tree, 'AnnotationGroups')
+
         # remove .json extension
-        file_name = os.path.basename(os.path.splitext(file_to_process)[0])
+        file_name = os.path.basename(file_to_process).rsplit('.', 1)[0]
         # add .xml extension
         output_file = os.path.join(output_folder, f'{file_name}_asap.xml')
         # open correct hotspot xml
