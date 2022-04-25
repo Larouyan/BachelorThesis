@@ -174,11 +174,13 @@ def onselect(*args):
 
 def search_img_filepath(gxl_filename):
     extensions = ('png', 'bmp', 'jpg', 'jpeg', 'gif')
-    for ext in extensions:
-        for img in os.listdir(img_dir.get()):
-            if re.match(r'.*' + re.escape(gxl_filename) + r'.*', img):  # todo: regex is enough strict ?
-                if gxl_filename.endswith(ext):
+
+    for img in os.listdir(img_dir.get()):
+        if re.match(r'.*' + re.escape(gxl_filename) + r'.*', img):  # todo: regex is enough strict ?
+            for ext in extensions:
+                if img.endswith(ext):
                     return os.path.join(img_dir.get(), img)
+
     return None
 
 
