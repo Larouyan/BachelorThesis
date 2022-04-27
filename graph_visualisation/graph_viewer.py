@@ -46,6 +46,14 @@ def save_img(*args):
             graph_img.save(output_path)
 
 
+def save_all(*arg):
+    output_path = filedialog.askdirectory()
+    if output_path:
+        if os.path.isdir(output_path):
+            # todo: save all images
+            pass
+
+
 def is_number(inp):
     if inp == '':
         return True
@@ -154,6 +162,7 @@ def onselect(*args):
                 enable_customisation()
                 if color_by_feature.get() == 'None':
                     col_by_f = None
+                    current_node = selected_node.get()
                 else:
                     col_by_f = color_by_feature.get()
 
@@ -176,7 +185,7 @@ def search_img_filepath(gxl_filename):
     extensions = ('png', 'bmp', 'jpg', 'jpeg', 'gif')
 
     for img in os.listdir(img_dir.get()):
-        if re.match(r'.*' + re.escape(gxl_filename) + r'.*', img):  # todo: regex is enough strict ?
+        if re.match(r'.*' + re.escape(gxl_filename) + r'.*', img):
             for ext in extensions:
                 if img.endswith(ext):
                     return os.path.join(img_dir.get(), img)
@@ -225,9 +234,13 @@ if __name__ == '__main__':
     canvas = Canvas(mainframe, width=512, height=512, bg='white')
     canvas.grid(column=2, row=2, rowspan=6, columnspan=2)
 
-    # Button to save image
+    # Button to save current image
     save_button = ttk.Button(mainframe, text='Save As', command=save_img)
     save_button.grid(column=0, row=10, columnspan=2)
+
+    # Button to save all images
+    save_button = ttk.Button(mainframe, text='Save All', command=save_all)
+    save_button.grid(column=0, row=11, columnspan=2)
 
     # Customisation on the left of the canvas
     bottom_canvas_frame = Frame(mainframe)
