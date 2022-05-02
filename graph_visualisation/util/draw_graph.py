@@ -17,7 +17,7 @@ class MplColorHelper:
 
 class GraphDrawer:
     def __init__(self, graph, img, color_by_feature, node_style, edge_style, scaling,
-                 transparency) -> None:
+                 transparency, current_node) -> None:
         """
         This class draws the graph on the image
 
@@ -28,6 +28,7 @@ class GraphDrawer:
         :param edge_style: dictionary with the edge style
         :param scaling: scaling for the x,y coordinates (in case they are not in pixels)
         :param transparency: transparency of the original image
+        :param current_node: the current node selected in the node style option menu
         """
         self.transparency = transparency
         self.graph = graph
@@ -35,6 +36,7 @@ class GraphDrawer:
         self.scaling = scaling
         self.id = graph.file_id
         self.color_by_feature = color_by_feature
+        self.current_node = current_node
 
         self.node_style = node_style
         self.edge_style = edge_style
@@ -104,10 +106,11 @@ class GraphDrawer:
                                  color=self.node_style[feature]['color'],
                                  thickness=self.node_style['thickness'])
         else:
-            default = {'color': (47, 130, 224, 255), 'radius': 20, 'thickness': -1}
+            # default = {'color': (47, 130, 224, 255), 'radius': 20, 'thickness': -1}
             for i, point in points.items():
-                img = cv2.circle(img, point, radius=default['radius'], color=default['color'],
-                                 thickness=default['thickness'])
+                img = cv2.circle(img, point, radius=self.node_style[self.current_node]['radius'],
+                                 color=self.node_style[self.current_node]['color'],
+                                 thickness=self.node_style['thickness'])
 
         return img
 

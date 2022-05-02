@@ -50,8 +50,17 @@ def save_all(*arg):
     output_path = filedialog.askdirectory()
     if output_path:
         if os.path.isdir(output_path):
-            # todo: save all images
-            pass
+            for gxl_file in os.listdir(gxl_dir.get()):
+                gxl_filename = gxl_file.rsplit('.', 1)[0]
+                img_filepath = search_img_filepath(gxl_filename)
+                if img_filepath:
+                    gxl_filepath = os.path.join(gxl_dir.get(), gxl_file)
+                    temp_graph = graph_plotter(gxl_filepath=gxl_filepath, img_filepath=img_filepath,
+                                               color_by_feature=get_color_by_feature(),
+                                               node_style=node_style, edge_style=edge_style,
+                                               scaling=float(scaling.get()), transparency=transparency.get(),
+                                               current_node=selected_node.get())
+                    temp_graph.save(output_path)
 
 
 def is_number(inp):
@@ -80,6 +89,7 @@ def update_ns_view(*args):
     # Update node style radius entry
     ns_entry.delete(0, END)
     ns_entry.insert(0, str(node_style[selected_node.get()]['radius']))
+    onselect()
 
 
 def update_ns_radius(*args):
@@ -127,7 +137,7 @@ def update_es_color(*args):
 
 
 def disable_customisation():
-    save_button['state'] = DISABLED
+    save_button['state'], save_all_button['state'] = DISABLED, DISABLED
     for child in bottom_canvas_frame.winfo_children() + right_canvas_frame.winfo_children():
         child['state'] = DISABLED
         if child is ns_color_label or es_color_label:
@@ -135,13 +145,20 @@ def disable_customisation():
 
 
 def enable_customisation():
-    save_button['state'] = NORMAL
+    save_button['state'], save_all_button['state'] = NORMAL, NORMAL
     for child in bottom_canvas_frame.winfo_children() + right_canvas_frame.winfo_children():
         child['state'] = NORMAL
         if child is ns_color_label:
             child.bind('<Button-1>', update_ns_color)
         elif child is es_color_label:
             child.bind('<Button-1>', update_es_color)
+
+
+def get_color_by_feature():
+    if color_by_feature.get() == 'None':
+        return None
+    else:
+        return color_by_feature.get()
 
 
 def onselect(*args):
@@ -160,15 +177,12 @@ def onselect(*args):
         if img_filepath:
             if os.path.isfile(img_filepath) and os.path.isfile(gxl_filepath):
                 enable_customisation()
-                if color_by_feature.get() == 'None':
-                    col_by_f = None
-                    current_node = selected_node.get()
-                else:
-                    col_by_f = color_by_feature.get()
 
                 graph_img = graph_plotter(gxl_filepath=gxl_filepath, img_filepath=img_filepath,
-                                          color_by_feature=col_by_f, node_style=node_style, edge_style=edge_style,
-                                          scaling=float(scaling.get()), transparency=transparency.get())
+                                          color_by_feature=get_color_by_feature(),
+                                          node_style=node_style, edge_style=edge_style,
+                                          scaling=float(scaling.get()), transparency=transparency.get(),
+                                          current_node=selected_node.get())
                 img = graph_img.get_image()
 
                 photo_img = ImageTk.PhotoImage(Image.fromarray(img).resize((canvas.winfo_width(), canvas.winfo_height()),
@@ -239,8 +253,8 @@ if __name__ == '__main__':
     save_button.grid(column=0, row=10, columnspan=2)
 
     # Button to save all images
-    save_button = ttk.Button(mainframe, text='Save All', command=save_all)
-    save_button.grid(column=0, row=11, columnspan=2)
+    save_all_button = ttk.Button(mainframe, text='Save All', command=save_all)
+    save_all_button.grid(column=0, row=11, columnspan=2)
 
     # Customisation on the left of the canvas
     bottom_canvas_frame = Frame(mainframe)
