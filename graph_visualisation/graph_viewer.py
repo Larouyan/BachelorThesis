@@ -5,6 +5,7 @@ from PIL import ImageTk, Image
 from graph_plotter import graph_plotter
 from util.draw_graph import GraphDrawer
 from util.default_config import node_style, edge_style, nodes
+from util.gxl_graph import ParsedGxlGraph
 
 import os
 import re
@@ -36,6 +37,7 @@ def load_gxl_dir(new_dir):
                 listbox.insert(END, file.rsplit('.', 1)[0])
     if listbox.size() > 0:
         listbox.select_set(0)
+        create_cbf_menu()
         onselect()
 
 
@@ -81,6 +83,11 @@ def is_int(inp):
         return True
     except ValueError:
         return False
+
+
+def create_cbf_menu():
+    get_features()
+    pass
 
 
 def update_ns_view(*args):
@@ -159,6 +166,13 @@ def get_color_by_feature():
         return None
     else:
         return color_by_feature.get()
+
+
+def get_features():
+    parsed = ParsedGxlGraph(os.path.join(gxl_dir.get(), os.listdir(gxl_dir.get())[0]))
+    features = [f for f in parsed.node_feature_names if f not in ['x', 'y']]
+    for feature in features:
+        cbf_menu['menu'].add_command(label=feature, command=lambda value=feature: color_by_feature.set(value))
 
 
 def onselect(*args):
@@ -280,14 +294,12 @@ if __name__ == '__main__':
 
     # Color_by_feature
     color_by_feature = StringVar()
-    color_by_feature.set('type')
-    ttk.Label(bottom_canvas_frame, text='Color by Feature').grid(column=0, row=2, columnspan=2)
-    radio_button1 = Radiobutton(bottom_canvas_frame, variable=color_by_feature,
-                                text='None', value='None', command=onselect)
-    radio_button1.grid(column=0, row=3, columnspan=2)
-    radio_button2 = Radiobutton(bottom_canvas_frame, variable=color_by_feature,
-                                text='Type', value='type', command=onselect)
-    radio_button2.grid(column=0, row=4, columnspan=3)
+    color_by_feature.set('None')
+    color_by_feature.trace('w', onselect)
+
+    ttk.Label(bottom_canvas_frame, text='Color by feature:').grid(column=0, row=3)
+    cbf_menu = OptionMenu(bottom_canvas_frame, color_by_feature, color_by_feature.get())
+    cbf_menu.grid(column=1, row=3)
 
     # Customisation on the right of the canvas
     right_canvas_frame = ttk.Frame(mainframe)
