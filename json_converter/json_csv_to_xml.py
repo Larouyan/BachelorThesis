@@ -11,11 +11,11 @@ def derivation(reader, core_id):
     coord = None
     for row in reader:
         if core_id == str(row[0]):
-            coord = (float(row[1]), float(row[2]))
+            coord = (float(row[1]), float(row[2]), float(row[3]))
     return coord
 
 
-def convert_json_to_xml(files_to_process, coord_file, output_folder):
+def convert_json_csv_to_xml(files_to_process, coord_file, output_folder):
     """
         This function take a list of json files containing data about Tumor, Extraepithelial CD8+ Cell and
         Intraepithelial CD8+ Cell, a csv file containing the coordinates of the centroids of every hotspot
@@ -43,60 +43,84 @@ def convert_json_to_xml(files_to_process, coord_file, output_folder):
         # output file, add .xml extension
         output_file = os.path.join(output_folder, f'{coord_name}_asap.xml')
         for file_to_process in files_to_process:
+            # initiate xml_tree
+            temp_tree = ET.Element('ASAP_Annotations')
+            # Make the annotations and coordinates
+            temp_annotations = ET.SubElement(temp_tree, 'Annotations')
+            # Make the groups
+            temp_annotation_groups = ET.SubElement(temp_tree, 'AnnotationGroups')
+
             # remove .json extension
             file_name = os.path.basename(file_to_process).rsplit('.', 1)[0]
             # get the core id of the json file
             core_id = re.search('.*_CoreID_(.*)', file_name).group(1)
+            # temp output file
+            temp_output_file = os.path.join(output_folder, f'{file_name}_asap.xml')
 
             csv_file.seek(0)
             coord = derivation(reader, core_id)
             if coord:
-                dx, dy = coord
+                dx, dy, r = coord
+
                 # open json file
                 with open(file_to_process) as file:
                     # load json file
                     data = json.load(file)
                     objects = data['Objects_Data']
-                    # make the hotspot group
-                    xml_main_group = ET.SubElement(xml_annotation_groups, 'Group',
-                                                   attrib={'Name': f'Core_ID_{core_id}', 'PartOfGroup': 'None',
-                                                           'Color': '#64FE2E'})
-                    xml_main_group_attrib = ET.SubElement(xml_main_group, 'Attributes')
+
                     for group in annotations:
                         # make the group
                         xml_group = ET.SubElement(xml_annotation_groups, 'Group',
-                                                  attrib={'Name': f'{group}, Core_ID_{core_id}', 'PartOfGroup': f'Core_ID_{core_id}',
+                                                  attrib={'Name': f'{group}, Core_ID_{core_id}', 'PartOfGroup': 'None',
                                                           'Color': colors[group]})
+                        # make the group
+                        temp_xml_group = ET.SubElement(temp_annotation_groups, 'Group',
+                                                       attrib={'Name': f'{group}, Core_ID_{core_id}',
+                                                               'PartOfGroup': 'None',
+                                                               'Color': colors[group]})
                         xml_group_attrib = ET.SubElement(xml_group, 'Attributes')
+                        temp_xml_group_attrib = ET.SubElement(temp_xml_group, 'Attributes')
                         for i, object in enumerate(objects):
                             if object['Classification'] == group:
                                 # Tumour and CD8+ Cell (Polygons)
                                 # annotation
-                                annotation_attrib = {'Name': f'Annotation {i}', 'PartOfGroup': f'{group}, Core_ID_{core_id}',
+                                annotation_attrib = {'Name': f'Annotation {i}',
+                                                     'PartOfGroup': f'{group}, Core_ID_{core_id}',
                                                      'Color': colors[group], 'Type': 'Polygon'}
                                 xml_annotation = ET.SubElement(xml_annotations, 'Annotation', annotation_attrib)
+                                temp_annotation = ET.SubElement(temp_annotations, 'Annotation', annotation_attrib)
                                 # ROI Points
                                 xml_coordinates = ET.SubElement(xml_annotation, 'Coordinates')
+                                temp_coordinates = ET.SubElement(temp_annotation, 'Coordinates')
                                 # get the list of points
                                 points = object['ROI_Points']
                                 # iterate over the list of points
                                 for j, point in enumerate(points):
-                                    coord_attrib = {'Order': str(j), 'X': str(point[0] + dx), 'Y': str(point[1] + dy)}
+                                    coord_attrib = {'Order': str(j), 'X': str(point[0] + dx - r), 'Y': str(point[1] + dy - r)}
                                     xml_coordinate = ET.SubElement(xml_coordinates, 'Coordinate', attrib=coord_attrib)
+                                    temp_coordinate = ET.SubElement(temp_coordinates, 'Coordinate', attrib=coord_attrib)
                             elif group == 'Center of Mass':
                                 # Center of Mass (Dot)
-                                annotation_attrib = {'Name': f'Annotation {i + len(objects)}', 'PartOfGroup': f'{group}, Core_ID_{core_id}',
+                                annotation_attrib = {'Name': f'Annotation {i + len(objects)}',
+                                                     'PartOfGroup': f'{group}, Core_ID_{core_id}',
                                                      'Color': colors[group], 'Type': 'Dot'}
                                 # get coordinates of the center of mass
                                 cmx, cmy = object['Center_of_Mass']
-                                cm_attrib = {'Order': '0', 'X': str(cmx + dx), 'Y': str(cmy + dy)}
+                                cm_attrib = {'Order': '0', 'X': str(cmx + dx - r), 'Y': str(cmy + dy - r)}
                                 xml_annotation = ET.SubElement(xml_annotations, 'Annotation', annotation_attrib)
                                 xml_coordinates = ET.SubElement(xml_annotation, 'Coordinates')
                                 xml_coordinate = ET.SubElement(xml_coordinates, 'Coordinate', attrib=cm_attrib)
+                                # temp
+                                temp_annotation = ET.SubElement(temp_annotations, 'Annotation', annotation_attrib)
+                                temp_coordinates = ET.SubElement(temp_annotation, 'Coordinates')
+                                temp_coordinate = ET.SubElement(temp_coordinates, 'Coordinate', attrib=cm_attrib)
             else:
                 print(f'No coordinates found for the core id {core_id}')
 
-    # Write
+            # Write temp
+            temp = ET.ElementTree(temp_tree).write(temp_output_file, pretty_print=True)
+
+    # Write full image
     e = ET.ElementTree(xml_tree).write(output_file, pretty_print=True)
 
 
@@ -125,4 +149,4 @@ if __name__ == '__main__':
     assert os.path.isfile(coord_path), f'{coord_path} is not a file'
     assert coord_path.endswith('.csv'), f'{coord_path} is not a csv file'
     # create xml files
-    convert_json_to_xml(files, coord_path, output_dir)
+    convert_json_csv_to_xml(files, coord_path, output_dir)
