@@ -4,6 +4,7 @@ import argparse
 import json
 import re
 import csv
+# import openslide
 from xml.dom import minidom
 
 
@@ -11,7 +12,12 @@ def derivation(reader, core_id):
     coord = None
     for row in reader:
         if core_id == str(row[0]):
-            coord = (float(row[1]), float(row[2]), float(row[3]))
+            # wsi_img = openslide.open_slide('16_08_IVA_PanCK_CD8.mrxs')
+            # bx = wsi_img.properties[openslide.PROPERTY_NAME_BOUNDS_X]
+            # by = wsi_img.properties[openslide.PROPERTY_NAME_BOUNDS_Y]
+            bx = 30
+            by = 30320
+            coord = (float(row[1]) + bx, float(row[2]) + by, float(row[3]))
     return coord
 
 
