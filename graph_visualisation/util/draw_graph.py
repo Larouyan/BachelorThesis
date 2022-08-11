@@ -116,5 +116,5 @@ class GraphDrawer:
 
     def save(self, output_path: str):
         output_file = os.path.join(output_path, f'{self.id}-vis.png')
-        cv2.imwrite(output_file, cv2.cvtColor(self.get_image(), cv2.COLOR_RGB2BGR))
+        cv2.imwrite(output_file, cv2.cvtColor(self.get_image(), cv2.COLOR_RGB2BGRA))
         print(f'Visualization saved to {output_file}')

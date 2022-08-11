@@ -14,6 +14,11 @@ graph_img = GraphDrawer
 
 
 def select_img_dir(*args):
+    """
+    Ask the user for the directory where the images are.
+    :param args:
+    :return:
+    """
     new_dir = filedialog.askdirectory()
     if new_dir:
         if os.path.isdir(new_dir):
@@ -21,6 +26,11 @@ def select_img_dir(*args):
 
 
 def select_gxl_dir(*args):
+    """
+    Ask user for the directory where the gxl files are.
+    :param args:
+    :return:
+    """
     new_dir = filedialog.askdirectory()
     if new_dir:
         if os.path.isdir(new_dir):
@@ -28,6 +38,11 @@ def select_gxl_dir(*args):
 
 
 def load_gxl_dir(new_dir):
+    """
+    Load the gxl files on the listbox.
+    :param new_dir: directory where the gxl files are.
+    :return:
+    """
     gxl_dir.set(new_dir)
     # delete previous gxl dir
     listbox.delete(0, END)
@@ -42,6 +57,11 @@ def load_gxl_dir(new_dir):
 
 
 def save_img(*args):
+    """
+    Save the current image
+    :param args:
+    :return:
+    """
     output_path = filedialog.askdirectory()
     if output_path:
         if os.path.isdir(output_path):
@@ -49,6 +69,11 @@ def save_img(*args):
 
 
 def save_all(*arg):
+    """
+    Save all images with graph in a directory chosen by the user.
+    :param arg:
+    :return:
+    """
     output_path = filedialog.askdirectory()
     if output_path:
         if os.path.isdir(output_path):
@@ -91,6 +116,11 @@ def create_cbf_menu():
 
 
 def update_ns_view(*args):
+    """
+    Update node style (color + radius)
+    :param args:
+    :return:
+    """
     # Update node style color label
     ns_color_label['background'] = '#{:02x}{:02x}{:02x}'.format(*node_style[selected_node.get()]['color'])
     # Update node style radius entry
@@ -100,6 +130,11 @@ def update_ns_view(*args):
 
 
 def update_ns_radius(*args):
+    """
+    update the radius of the nodes
+    :param args:
+    :return:
+    """
     if ns_entry.get() == '':
         # If user pass no number for the radius -> rewrite previous one
         ns_entry.insert(0, str(node_style[selected_node.get()]['radius']))
@@ -109,6 +144,11 @@ def update_ns_radius(*args):
 
 
 def update_ns_color(*args):
+    """
+    update the color of the nodes
+    :param args:
+    :return:
+    """
     new_color = colorchooser.askcolor()[0]
     if new_color:
         r, g, b = new_color
@@ -118,6 +158,11 @@ def update_ns_color(*args):
 
 
 def update_es_view(*args):
+    """
+    update edge style view (color + thickness)
+    :param args:
+    :return:
+    """
     # Update edge style color label
     es_color_label['background'] = '#{:02x}{:02x}{:02x}'.format(*edge_style['color'])
     # Update edge style thickness entry
@@ -126,6 +171,11 @@ def update_es_view(*args):
 
 
 def update_es_thickness(*args):
+    """
+    update the thickness of the edges
+    :param args:
+    :return:
+    """
     if es_entry.get() == '':
         # if user pass no number for thickness -> rewrite previous one
         es_entry.insert(0, str(edge_style['thickness']))
@@ -135,6 +185,11 @@ def update_es_thickness(*args):
 
 
 def update_es_color(*args):
+    """
+    update the color of the edges
+    :param args:
+    :return:
+    """
     new_color = colorchooser.askcolor()[0]
     if new_color:
         r, g, b = new_color
@@ -144,6 +199,10 @@ def update_es_color(*args):
 
 
 def disable_customisation():
+    """
+    Disable the customisation options for the user
+    :return:
+    """
     save_button['state'], save_all_button['state'] = DISABLED, DISABLED
     for child in bottom_canvas_frame.winfo_children() + right_canvas_frame.winfo_children():
         child['state'] = DISABLED
@@ -152,6 +211,10 @@ def disable_customisation():
 
 
 def enable_customisation():
+    """
+    Allow user to interact with the customisation options
+    :return:
+    """
     save_button['state'], save_all_button['state'] = NORMAL, NORMAL
     for child in bottom_canvas_frame.winfo_children() + right_canvas_frame.winfo_children():
         child['state'] = NORMAL
@@ -162,6 +225,9 @@ def enable_customisation():
 
 
 def get_color_by_feature():
+    """
+    :return: Selected feature
+    """
     if color_by_feature.get() == 'None':
         return None
     else:
@@ -169,6 +235,10 @@ def get_color_by_feature():
 
 
 def get_features():
+    """
+    Fill the option menu with the nodes features.
+    :return:
+    """
     parsed = ParsedGxlGraph(os.path.join(gxl_dir.get(), os.listdir(gxl_dir.get())[0]))
     features = [f for f in parsed.node_feature_names if f not in ['x', 'y']]
     for feature in features:
@@ -176,6 +246,11 @@ def get_features():
 
 
 def onselect(*args):
+    """
+    Draw the image with the graph on the canvas
+    :param args:
+    :return:
+    """
     global graph_img
     if img_dir.get() != '':
         canvas.delete("all")
@@ -210,6 +285,11 @@ def onselect(*args):
 
 
 def search_img_filepath(gxl_filename):
+    """
+    Find the image corresponding to the gxl file given in input
+    :param gxl_filename: name of the gxl file.
+    :return:
+    """
     extensions = ('png', 'bmp', 'jpg', 'jpeg', 'gif')
 
     for img in os.listdir(img_dir.get()):

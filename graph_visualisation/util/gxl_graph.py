@@ -16,7 +16,8 @@ class ParsedGxlGraph:
         ----------
         path_to_gxl: str
             path to the gxl file
-        color_by_feature:
+        color_by_feature: str
+            modify the color of the nodes
         """
         self.filepath = path_to_gxl
 
