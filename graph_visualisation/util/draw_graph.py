@@ -48,7 +48,7 @@ class GraphDrawer:
     @img.setter
     def img(self, img):
         # Add alpha layer
-        bgra = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)
+        bgra = cv2.cvtColor(img, cv2.COLOR_RGB2BGRA)
         # Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3
         bgra[..., 3] = self.transparency
         self._img = bgra
