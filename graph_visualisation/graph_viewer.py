@@ -46,7 +46,7 @@ def load_gxl_dir(new_dir):
     gxl_dir.set(new_dir)
     # delete previous gxl dir
     listbox.delete(0, END)
-    for file in os.listdir(new_dir):
+    for file in sorted(os.listdir(new_dir)):
         if file.lower().endswith('.gxl'):
             if os.path.isfile(os.path.join(new_dir, file)):
                 listbox.insert(END, file.rsplit('.', 1)[0])
@@ -204,7 +204,7 @@ def disable_customisation():
     :return:
     """
     save_button['state'], save_all_button['state'] = DISABLED, DISABLED
-    for child in bottom_canvas_frame.winfo_children() + right_canvas_frame.winfo_children():
+    for child in right_canvas_frame.winfo_children():
         child['state'] = DISABLED
         if child is ns_color_label or es_color_label:
             child.unbind('<Button-1>')
@@ -216,7 +216,7 @@ def enable_customisation():
     :return:
     """
     save_button['state'], save_all_button['state'] = NORMAL, NORMAL
-    for child in bottom_canvas_frame.winfo_children() + right_canvas_frame.winfo_children():
+    for child in right_canvas_frame.winfo_children():
         child['state'] = NORMAL
         if child is ns_color_label:
             child.bind('<Button-1>', update_ns_color)
@@ -314,8 +314,11 @@ if __name__ == '__main__':
     # Create main frame where element are displayed
     mainframe = ttk.Frame(root, padding="3 3 12 12")
     mainframe.grid(column=0, row=0)
-    mainframe.columnconfigure(10, weight=1)
-    mainframe.rowconfigure(10, weight=1)
+    for col in range(10):
+        mainframe.columnconfigure(col, weight=1)
+        for row in range(10):
+            mainframe.rowconfigure(row, weight=1)
+
     mainframe.pack(expand=1, fill=BOTH)
 
     # Create button asking user to give the path of folder containing hotspot images
@@ -339,8 +342,8 @@ if __name__ == '__main__':
     listbox.bind('<<ListboxSelect>>', onselect)
 
     # Canvas to display images
-    canvas = Canvas(mainframe, width=512, height=512, bg='white')
-    canvas.grid(column=2, row=2, rowspan=6, columnspan=2)
+    canvas = Canvas(mainframe, width=600, height=600, bg='white')
+    canvas.grid(column=2, row=2, rowspan=6, columnspan=2, sticky='nsew')
 
     # Button to save current image
     save_button = ttk.Button(mainframe, text='Save As', command=save_img)
@@ -350,26 +353,29 @@ if __name__ == '__main__':
     save_all_button = ttk.Button(mainframe, text='Save All', command=save_all)
     save_all_button.grid(column=0, row=11, columnspan=2)
 
-    # Customisation on the left of the canvas
-    bottom_canvas_frame = Frame(mainframe)
-    bottom_canvas_frame.grid(column=2, row=9, columnspan=2, rowspan=5)
+    # Customisation on the right of the canvas
+    right_canvas_frame = ttk.Frame(mainframe)
+    right_canvas_frame.grid(column=6, row=2, columnspan=2, rowspan=11)
 
     # Transparency
+    ttk.Label(right_canvas_frame, text='Transparency').grid(column=0, row=6, columnspan=2)
     transparency = IntVar()
     transparency.set(125)
-    transparency_scale = Scale(bottom_canvas_frame, from_=0, to=255, orient=HORIZONTAL, length=255,
+    transparency_scale = Scale(right_canvas_frame, from_=0, to=255, orient=HORIZONTAL, length=255,
                                activebackground='red', command=onselect, variable=transparency)
-    transparency_scale.grid(column=0, row=0, columnspan=2)
+    transparency_scale.grid(column=0, row=7, columnspan=2)
 
     # Scaling
     scaling = StringVar()
     scaling.set('1.0')
-    ttk.Label(bottom_canvas_frame, text='Scaling: ').grid(column=0, row=1)
+    ttk.Label(right_canvas_frame, text='Scaling: ').grid(column=0, row=8)
+    # Good scaling for hotspot images = 4.118660172440437
+
     # register function to check if the entry is a float number or not
     reg_is_number = mainframe.register(is_number)
-    scaling_entry = Entry(bottom_canvas_frame, textvariable=scaling, validate='key',
+    scaling_entry = Entry(right_canvas_frame, textvariable=scaling, validate='key',
                           validatecommand=(reg_is_number, '%P'))
-    scaling_entry.grid(column=1, row=1)
+    scaling_entry.grid(column=1, row=8)
     scaling_entry.bind('<Return>', onselect)
 
     # Color_by_feature
@@ -377,13 +383,9 @@ if __name__ == '__main__':
     color_by_feature.set('None')
     color_by_feature.trace('w', onselect)
 
-    ttk.Label(bottom_canvas_frame, text='Color by feature:').grid(column=0, row=3)
-    cbf_menu = OptionMenu(bottom_canvas_frame, color_by_feature, color_by_feature.get())
-    cbf_menu.grid(column=1, row=3)
-
-    # Customisation on the right of the canvas
-    right_canvas_frame = ttk.Frame(mainframe)
-    right_canvas_frame.grid(column=4, row=2, columnspan=2, rowspan=6)
+    ttk.Label(right_canvas_frame, text='Color by feature:').grid(column=0, row=10)
+    cbf_menu = OptionMenu(right_canvas_frame, color_by_feature, color_by_feature.get())
+    cbf_menu.grid(column=1, row=10)
 
     # Node Style
     ttk.Label(right_canvas_frame, text='Node Style', font=('Times', 18, 'bold')).grid(column=0, row=0)
@@ -417,6 +419,11 @@ if __name__ == '__main__':
     es_entry = Entry(right_canvas_frame, validate='key', validatecommand=(reg_is_int, '%P'))
     es_entry.grid(column=1, row=5)
     es_entry.bind('<Return>', update_es_thickness)
+
+    for row in range(11):
+        right_canvas_frame.rowconfigure(row, weight=1)
+    for col in range(2):
+        right_canvas_frame.columnconfigure(col, weight=1)
 
     update_ns_view()
     update_es_view()
