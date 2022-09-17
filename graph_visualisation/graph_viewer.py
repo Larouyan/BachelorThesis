@@ -11,6 +11,7 @@ import os
 import re
 
 graph_img = GraphDrawer
+listbox_content = []
 
 
 def select_img_dir(*args):
@@ -43,6 +44,7 @@ def load_gxl_dir(new_dir):
     :param new_dir: directory where the gxl files are.
     :return:
     """
+    global listbox_content
     gxl_dir.set(new_dir)
     # delete previous gxl dir
     listbox.delete(0, END)
@@ -52,8 +54,17 @@ def load_gxl_dir(new_dir):
                 listbox.insert(END, file.rsplit('.', 1)[0])
     if listbox.size() > 0:
         listbox.select_set(0)
+        listbox_content = listbox.get(0, END)
+        lb_entry['state'] = NORMAL
         create_cbf_menu()
         onselect()
+
+
+def update_gxl_listbox(pattern):
+    listbox.delete(0, END)
+    for file in listbox_content:
+        if str(file).upper().startswith(pattern.get().upper()):
+            listbox.insert(END, file)
 
 
 def save_img(*args):
@@ -203,7 +214,7 @@ def disable_customisation():
     Disable the customisation options for the user
     :return:
     """
-    save_button['state'], save_all_button['state'] = DISABLED, DISABLED
+    save_button['state'], save_all_button['state'], lb_entry['state'] = DISABLED, DISABLED, DISABLED
     for child in right_canvas_frame.winfo_children():
         child['state'] = DISABLED
         if child is ns_color_label or es_color_label:
@@ -333,13 +344,20 @@ if __name__ == '__main__':
 
     # Create listbox to list all the gxl files
     lbf = ttk.Frame(mainframe)
-    lbf.grid(column=0, row=2, columnspan=2)
+    lbf.grid(column=0, row=4, columnspan=2)
     listbox = Listbox(lbf, height=15)
     listbox.pack(side=LEFT, fill=BOTH)
     scrollbar = ttk.Scrollbar(lbf, orient=VERTICAL, command=listbox.yview)
     scrollbar.pack(side=RIGHT, fill=Y)
     listbox['yscrollcommand'] = scrollbar.set
     listbox.bind('<<ListboxSelect>>', onselect)
+
+    ttk.Label(mainframe, text='Search').grid(column=0, row=2, columnspan=2, rowspan=2)
+
+    lb_pattern = StringVar()
+    lb_pattern.trace("w", lambda name, index, mode, lb_pattern=lb_pattern: update_gxl_listbox(lb_pattern))
+    lb_entry = Entry(mainframe, textvariable=lb_pattern)
+    lb_entry.grid(column=0, row=3, columnspan=2)
 
     # Canvas to display images
     canvas = Canvas(mainframe, width=600, height=600, bg='white')
