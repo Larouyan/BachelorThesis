@@ -12,12 +12,9 @@ class ParsedGxlGraph:
     def __init__(self, path_to_gxl: str, color_by_feature: str = None) -> None:
         """
         This class contains all the information encoded in a single gxl file = one graph
-        Parameters
-        ----------
-        path_to_gxl: str
-            path to the gxl file
-        color_by_feature: str
-            modify the color of the nodes
+
+        :param path_to_gxl: path to the gxl file
+        :param color_by_feature: modify the color of the nodes
         """
         self.filepath = path_to_gxl
 

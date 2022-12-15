@@ -9,7 +9,16 @@ from xml.dom import minidom
 
 
 def derivation(reader, core_id):
+    """
+        This function take a csv reader and the id of a hotspot as input. It returns the coordinates of the centroid and
+        the length of the radius for the hotspot with the id "core_id".
+
+        :param reader: csv reader of the csv file containing the centroids coordinates, the radius length and the id of every hotspot.
+        :param core_id: id of the current hotspot.
+        :return: a tuple containing the centroids coordinates and the radius length.
+    """
     coord = None
+    # iterate over every row
     for row in reader:
         if core_id == str(row[0]):
             # wsi_img = openslide.open_slide('16_08_IVA_PanCK_CD8.mrxs')
@@ -26,6 +35,10 @@ def convert_json_csv_to_xml(files_to_process, coord_file, output_folder):
         This function take a list of json files containing data about Tumor, Extraepithelial CD8+ Cell and
         Intraepithelial CD8+ Cell, a csv file containing the coordinates of the centroids of every hotspot
         and an output folder as input and create xml files that can be loaded in ASAP.
+
+        :param files_to_process: list of path to json files containing annotations.
+        :param coord_file: path to the csv file containing the centroids coordinates, the radius length and the id of every hotspot images.
+        :param output_folder: path to the output directory.
     """
     # interested features
     annotations = ['Tumor', 'Extraepithelial CD8+ Cell', 'Intraepithelial CD8+ Cell', 'Center of Mass']
@@ -42,7 +55,7 @@ def convert_json_csv_to_xml(files_to_process, coord_file, output_folder):
 
     # open csv file
     with open(coord_file) as csv_file:
-        # read csv file
+        # iterator for reading the csv file
         reader = csv.reader(csv_file, delimiter=';')
         # remove .csv extension
         coord_name = os.path.basename(coord_file).rsplit('.', 1)[0]
@@ -102,7 +115,8 @@ def convert_json_csv_to_xml(files_to_process, coord_file, output_folder):
                                 points = object['ROI_Points']
                                 # iterate over the list of points
                                 for j, point in enumerate(points):
-                                    coord_attrib = {'Order': str(j), 'X': str(point[0] + dx - r), 'Y': str(point[1] + dy - r)}
+                                    coord_attrib = {'Order': str(j), 'X': str(point[0] + dx - r),
+                                                    'Y': str(point[1] + dy - r)}
                                     xml_coordinate = ET.SubElement(xml_coordinates, 'Coordinate', attrib=coord_attrib)
                                     temp_coordinate = ET.SubElement(temp_coordinates, 'Coordinate', attrib=coord_attrib)
                             elif group == 'Center of Mass':

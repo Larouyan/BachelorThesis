@@ -9,8 +9,12 @@ from xml.dom import minidom
 def convert_json_to_xml(files_to_process, hotspot_folder, output_folder):
     """
         This function take a list of json files containing data about Tumor, Extraepithelial CD8+ Cell and
-        Intraepithelial CD8+ Cell, a hotspot folder of xml files containing the coordinates of the hotspot
-        and an output folder as input and create xml files that can be loaded in ASAP.
+        Intraepithelial CD8+ Cell, a hotspot folder of xml files containing the coordinates of the hotspots
+        and an output folder as input and create xml files that can be loaded in ASAP in the output folder.
+
+        :param files_to_process: list of path to json files containing annotations.
+        :param hotspot_folder: path to the directory containing the xml files with the coordinates of the hotspots.
+        :param output_folder: path to the output directory.
     """
     # interested features
     annotations = ['Tumor', 'Extraepithelial CD8+ Cell', 'Intraepithelial CD8+ Cell', 'Center of Mass', 'hotspot']
@@ -37,9 +41,11 @@ def convert_json_to_xml(files_to_process, hotspot_folder, output_folder):
         if file_code in hotspot_name:
             # open hotspot xml file
             hotspot_file = minidom.parse(os.path.join(os.path.dirname(hotspot_folder[0]), file_code + '.xml'))
+            # read coordinates
             coordinates = hotspot_file.getElementsByTagName('Coordinate')
             hotspot_coord = [(float(point.attributes['X'].value), float(point.attributes['Y'].value))
                              for point in coordinates]
+            # extract top left corner coordinates
             dx, dy = hotspot_coord[0]
             # open json file
             with open(file_to_process) as file:

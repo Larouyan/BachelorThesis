@@ -8,7 +8,11 @@ import csv
 def convert_json_to_csv(files_to_process, output_folder):
     """
         This function take a list of json files containing data about Tumor, Extraepithelial CD8+ Cell and
-        Intraepithelial CD8+ Cell and an output folder as input and create a .CSV files of the interested features.
+        Intraepithelial CD8+ Cell and an output folder as input and create a .CSV files of the interested features
+        in the output folder.
+
+        :param files_to_process: list of path to json files containing annotations.
+        :param output_folder: path to the output directory.
     """
     features = ['Object_Index', 'Classification', 'Area', 'Circularity', 'Number_Cells', 'Perimeter', 'Solidity']
     for file_to_process in files_to_process:

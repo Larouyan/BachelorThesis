@@ -17,8 +17,6 @@ listbox_content = []
 def select_img_dir(*args):
     """
     Ask the user for the directory where the images are.
-    :param args:
-    :return:
     """
     new_dir = filedialog.askdirectory()
     if new_dir:
@@ -28,9 +26,7 @@ def select_img_dir(*args):
 
 def select_gxl_dir(*args):
     """
-    Ask user for the directory where the gxl files are.
-    :param args:
-    :return:
+    Ask the user for the directory where the gxl files are.
     """
     new_dir = filedialog.askdirectory()
     if new_dir:
@@ -42,7 +38,6 @@ def load_gxl_dir(new_dir):
     """
     Load the gxl files on the listbox.
     :param new_dir: directory where the gxl files are.
-    :return:
     """
     global listbox_content
     gxl_dir.set(new_dir)
@@ -61,6 +56,10 @@ def load_gxl_dir(new_dir):
 
 
 def update_gxl_listbox(pattern):
+    """
+    Update the list of gxl files such that it only display files that start with a given pattern.
+    :param pattern: string given by the user.
+    """
     listbox.delete(0, END)
     for file in listbox_content:
         if str(file).upper().startswith(pattern.get().upper()):
@@ -69,9 +68,7 @@ def update_gxl_listbox(pattern):
 
 def save_img(*args):
     """
-    Save the current image
-    :param args:
-    :return:
+    Save the current image in a directory chosen by the user.
     """
     output_path = filedialog.askdirectory()
     if output_path:
@@ -81,9 +78,7 @@ def save_img(*args):
 
 def save_all(*arg):
     """
-    Save all images with graph in a directory chosen by the user.
-    :param arg:
-    :return:
+    Save all images in a directory chosen by the user.
     """
     output_path = filedialog.askdirectory()
     if output_path:
@@ -128,9 +123,7 @@ def create_cbf_menu():
 
 def update_ns_view(*args):
     """
-    Update node style (color + radius)
-    :param args:
-    :return:
+    Update node style (color + radius).
     """
     # Update node style color label
     ns_color_label['background'] = '#{:02x}{:02x}{:02x}'.format(*node_style[selected_node.get()]['color'])
@@ -142,9 +135,7 @@ def update_ns_view(*args):
 
 def update_ns_radius(*args):
     """
-    update the radius of the nodes
-    :param args:
-    :return:
+    Update the radius of the nodes.
     """
     if ns_entry.get() == '':
         # If user pass no number for the radius -> rewrite previous one
@@ -156,9 +147,7 @@ def update_ns_radius(*args):
 
 def update_ns_color(*args):
     """
-    update the color of the nodes
-    :param args:
-    :return:
+    Update the color of the nodes.
     """
     new_color = colorchooser.askcolor()[0]
     if new_color:
@@ -170,9 +159,7 @@ def update_ns_color(*args):
 
 def update_es_view(*args):
     """
-    update edge style view (color + thickness)
-    :param args:
-    :return:
+    Update edge style view (color + thickness).
     """
     # Update edge style color label
     es_color_label['background'] = '#{:02x}{:02x}{:02x}'.format(*edge_style['color'])
@@ -183,9 +170,7 @@ def update_es_view(*args):
 
 def update_es_thickness(*args):
     """
-    update the thickness of the edges
-    :param args:
-    :return:
+    Update the thickness of the edges.
     """
     if es_entry.get() == '':
         # if user pass no number for thickness -> rewrite previous one
@@ -197,9 +182,7 @@ def update_es_thickness(*args):
 
 def update_es_color(*args):
     """
-    update the color of the edges
-    :param args:
-    :return:
+    Update the color of the edges.
     """
     new_color = colorchooser.askcolor()[0]
     if new_color:
@@ -211,20 +194,19 @@ def update_es_color(*args):
 
 def disable_customisation():
     """
-    Disable the customisation options for the user
-    :return:
+    Remove the permission to the user to interact with the customisation options.
     """
     save_button['state'], save_all_button['state'], lb_entry['state'] = DISABLED, DISABLED, DISABLED
     for child in right_canvas_frame.winfo_children():
-        child['state'] = DISABLED
+        if child not in (blank_checkbutton, blank_label):
+            child['state'] = DISABLED
         if child is ns_color_label or es_color_label:
             child.unbind('<Button-1>')
 
 
 def enable_customisation():
     """
-    Allow user to interact with the customisation options
-    :return:
+    Give the permission to the user to interact with the customisation options.
     """
     save_button['state'], save_all_button['state'] = NORMAL, NORMAL
     for child in right_canvas_frame.winfo_children():
@@ -237,7 +219,7 @@ def enable_customisation():
 
 def get_color_by_feature():
     """
-    :return: Selected feature
+    :return: Selected feature.
     """
     if color_by_feature.get() == 'None':
         return None
@@ -248,7 +230,6 @@ def get_color_by_feature():
 def get_features():
     """
     Fill the option menu with the nodes features.
-    :return:
     """
     parsed = ParsedGxlGraph(os.path.join(gxl_dir.get(), os.listdir(gxl_dir.get())[0]))
     features = [f for f in parsed.node_feature_names if f not in ['x', 'y']]
@@ -259,8 +240,6 @@ def get_features():
 def onselect(*args):
     """
     Draw the image with the graph on the canvas
-    :param args:
-    :return:
     """
     global graph_img
     if img_dir.get() != '':
@@ -274,21 +253,21 @@ def onselect(*args):
 
         gxl_filepath = os.path.join(gxl_dir.get(), gxl_filename + '.gxl')
         img_filepath = search_img_filepath(gxl_filename)
-        if img_filepath:
-            if os.path.isfile(img_filepath) and os.path.isfile(gxl_filepath):
-                enable_customisation()
 
-                graph_img = graph_plotter(gxl_filepath=gxl_filepath, img_filepath=img_filepath,
-                                          color_by_feature=get_color_by_feature(),
-                                          node_style=node_style, edge_style=edge_style,
-                                          scaling=float(scaling.get()), transparency=transparency.get(),
-                                          current_node=selected_node.get())
-                img = graph_img.get_image()
+        if img_filepath or (not img_filepath and cb_blank.get()):
+            enable_customisation()
 
-                photo_img = ImageTk.PhotoImage(Image.fromarray(img).resize((canvas.winfo_width(), canvas.winfo_height()),
-                                                                           Image.ANTIALIAS))
-                canvas.image = photo_img
-                canvas.create_image(0, 0, image=photo_img, anchor=NW)
+            graph_img = graph_plotter(gxl_filepath=gxl_filepath, img_filepath=img_filepath,
+                                      color_by_feature=get_color_by_feature(),
+                                      node_style=node_style, edge_style=edge_style,
+                                      scaling=float(scaling.get()), transparency=transparency.get(),
+                                      current_node=selected_node.get())
+            img = graph_img.get_image()
+
+            photo_img = ImageTk.PhotoImage(Image.fromarray(img).resize((canvas.winfo_width(), canvas.winfo_height()),
+                                                                       Image.ANTIALIAS))
+            canvas.image = photo_img
+            canvas.create_image(0, 0, image=photo_img, anchor=NW)
         else:
             disable_customisation()
             canvas.create_text(canvas.winfo_width() / 2, canvas.winfo_height() / 2,
@@ -297,9 +276,9 @@ def onselect(*args):
 
 def search_img_filepath(gxl_filename):
     """
-    Find the image corresponding to the gxl file given in input
+    Find the image corresponding to the gxl file given in input.
     :param gxl_filename: name of the gxl file.
-    :return:
+    :return: The path to the corresponding image if it exists, otherwise it returns None.
     """
     extensions = ('png', 'bmp', 'jpg', 'jpeg', 'gif')
 
@@ -373,7 +352,7 @@ if __name__ == '__main__':
 
     # Customisation on the right of the canvas
     right_canvas_frame = ttk.Frame(mainframe)
-    right_canvas_frame.grid(column=6, row=2, columnspan=2, rowspan=11)
+    right_canvas_frame.grid(column=6, row=2, columnspan=2, rowspan=12)
 
     # Transparency
     ttk.Label(right_canvas_frame, text='Transparency').grid(column=0, row=6, columnspan=2)
@@ -404,6 +383,16 @@ if __name__ == '__main__':
     ttk.Label(right_canvas_frame, text='Color by feature:').grid(column=0, row=10)
     cbf_menu = OptionMenu(right_canvas_frame, color_by_feature, color_by_feature.get())
     cbf_menu.grid(column=1, row=10)
+
+    # Checkbutton if the background should be blank when a graph didn't match with any images
+    cb_blank = BooleanVar()
+    cb_blank.set(False)
+
+    blank_checkbutton = ttk.Checkbutton(right_canvas_frame, command=onselect, offvalue=False, onvalue=True,
+                                        variable=cb_blank)
+    blank_checkbutton.grid(column=1, row=11)
+    blank_label = ttk.Label(right_canvas_frame, text='Blank background ?')
+    blank_label.grid(column=0, row=11)
 
     # Node Style
     ttk.Label(right_canvas_frame, text='Node Style', font=('Times', 18, 'bold')).grid(column=0, row=0)

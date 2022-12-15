@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 from util.gxl_graph import ParsedGxlGraph
 from util.draw_graph import GraphDrawer
@@ -20,7 +21,13 @@ def graph_plotter(gxl_filepath, img_filepath, color_by_feature, node_style, edge
     """
 
     graph = ParsedGxlGraph(gxl_filepath, color_by_feature=color_by_feature)
-    img = cv2.imread(img_filepath)
+    if img_filepath:
+        img = cv2.imread(img_filepath)
+    else:
+        # If there is no images, draw a blank background
+        img = np.zeros([1024, 1024, 1], dtype=np.uint8)
+        img.fill(255)
+        transparency = 255
 
     graph_img = GraphDrawer(graph, img, scaling=scaling, color_by_feature=color_by_feature,
                             node_style=node_style, edge_style=edge_style,
