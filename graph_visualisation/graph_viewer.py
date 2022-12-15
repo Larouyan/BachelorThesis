@@ -51,7 +51,7 @@ def load_gxl_dir(new_dir):
         listbox.select_set(0)
         listbox_content = listbox.get(0, END)
         lb_entry['state'] = NORMAL
-        create_cbf_menu()
+        load_graph_features()
         onselect()
 
 
@@ -114,11 +114,6 @@ def is_int(inp):
         return True
     except ValueError:
         return False
-
-
-def create_cbf_menu():
-    get_features()
-    pass
 
 
 def update_ns_view(*args):
@@ -196,7 +191,7 @@ def disable_customisation():
     """
     Remove the permission to the user to interact with the customisation options.
     """
-    save_button['state'], save_all_button['state'], lb_entry['state'] = DISABLED, DISABLED, DISABLED
+    save_button['state'], save_all_button['state'] = DISABLED, DISABLED
     for child in right_canvas_frame.winfo_children():
         if child not in (blank_checkbutton, blank_label):
             child['state'] = DISABLED
@@ -227,9 +222,9 @@ def get_color_by_feature():
         return color_by_feature.get()
 
 
-def get_features():
+def load_graph_features():
     """
-    Fill the option menu with the nodes features.
+    Fill the option menu with the graph features.
     """
     parsed = ParsedGxlGraph(os.path.join(gxl_dir.get(), os.listdir(gxl_dir.get())[0]))
     features = [f for f in parsed.node_feature_names if f not in ['x', 'y']]
@@ -335,7 +330,7 @@ if __name__ == '__main__':
 
     lb_pattern = StringVar()
     lb_pattern.trace("w", lambda name, index, mode, lb_pattern=lb_pattern: update_gxl_listbox(lb_pattern))
-    lb_entry = Entry(mainframe, textvariable=lb_pattern)
+    lb_entry = Entry(mainframe, textvariable=lb_pattern, state=DISABLED)
     lb_entry.grid(column=0, row=3, columnspan=2)
 
     # Canvas to display images
