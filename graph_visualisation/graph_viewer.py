@@ -6,7 +6,7 @@ from tkinter import filedialog, colorchooser
 
 from PIL import ImageTk, Image
 
-from graph_plotter import graph_plotter
+from util.graph_plotter import graph_plotter
 from gui.tk_factory import TkFactory
 from util.draw_graph import GraphDrawer
 from util.gxl_graph import ParsedGxlGraph
@@ -32,6 +32,11 @@ class GraphViewer:
         self.customizers = dict()
 
     def set_components_customizers(self, factory: TkFactory):
+        """
+        Set the values of the dictionaries components and customizers.
+        :param factory: TkFactory holding two dictionaries, one for the name and the corresponding tkinter widgets and
+        the other one for the name and a corresponding boolean value if the component is a customizer or not.
+        """
         self.components = factory.get_components()
         self.customizers = factory.get_customizers()
 
@@ -71,7 +76,7 @@ class GraphViewer:
             self.listbox_content = listbox.get(0, END)
             self.components['lb_entry']['state'] = NORMAL
             self.load_graph_features()
-            # onselect()
+            self.onselect()
 
     def update_gxl_listbox(self, pattern):
         """

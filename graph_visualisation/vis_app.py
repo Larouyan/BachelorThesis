@@ -1,4 +1,3 @@
-
 from tkinter import *
 from tkinter import ttk
 
@@ -10,6 +9,11 @@ from graph_viewer import GraphViewer
 
 
 def is_int(inp):
+    """
+    Check if the input parameter is an integer or an empty value.
+    :param inp: input value
+    :return: True if inp is an integer or empty value
+    """
     if inp == '':
         return True
     try:
@@ -20,6 +24,11 @@ def is_int(inp):
 
 
 def is_number(inp):
+    """
+    Check if the input parameter is a float or an empty value.
+    :param inp: input value
+    :return: True if inp is a float or empty value
+    """
     if inp == '':
         return True
     try:
@@ -37,7 +46,6 @@ if __name__ == '__main__':
     root.grid_rowconfigure(0, weight=1)
     root.resizable(width=True, height=True)
     root.iconbitmap('diva_banner.ico')
-    # root.config(background='#CBCBCB')
 
     # Create main frame where element are displayed
     mainframe = ttk.Frame(root, padding="3 3 12 12")
@@ -46,7 +54,6 @@ if __name__ == '__main__':
         mainframe.columnconfigure(col, weight=1)
         for row in range(10):
             mainframe.rowconfigure(row, weight=1)
-
     mainframe.pack(expand=1, fill=BOTH)
 
     # Variables:
@@ -120,7 +127,6 @@ if __name__ == '__main__':
     # Canvas to display images
     canvas = tk_factory.create_canvas(mainframe, 'canvas')
     canvas.configure(width=600, height=600, bg='white')
-    # canvas = Canvas(mainframe, width=600, height=600, bg='white')
     canvas.grid(column=2, row=2, rowspan=6, columnspan=2, sticky='nsew')
 
     # Button to save current image
@@ -168,8 +174,6 @@ if __name__ == '__main__':
     cbf_label.configure(text='Color by feature:')
     cbf_label.grid(column=0, row=10)
 
-    # ttk.Label(right_canvas_frame, text='Color by feature:').grid(column=0, row=10)
-    # cbf_menu = OptionMenu(right_canvas_frame, color_by_feature, color_by_feature.get())
     cbf_menu = tk_factory.create_option_menu(right_canvas_frame, 'cbf_menu', True,
                                              color_by_feature, color_by_feature.get())
     cbf_menu.grid(column=1, row=10)
@@ -199,7 +203,6 @@ if __name__ == '__main__':
     ns_color_label.grid(column=0, row=3)
     ns_color_label.bind('<Button-1>', graph_viewer.update_ns_color)
 
-    # ttk.Label(right_canvas_frame, ).grid(column=0, row=4)
     node_radius_label = tk_factory.create_label(right_canvas_frame, 'node_radius_label', True)
     node_radius_label.configure(text='Node Radius')
     node_radius_label.grid(column=0, row=4)
@@ -214,7 +217,6 @@ if __name__ == '__main__':
     es_label = tk_factory.create_label(right_canvas_frame, 'es_label', True)
     es_label.configure(text='Edge Style', font=('Times', 18, 'bold'))
     es_label.grid(column=1, row=0)
-    # ttk.Label(right_canvas_frame, ).grid(column=1, row=0)
 
     edge_color_label = tk_factory.create_label(right_canvas_frame, 'edge_color_label', True)
     edge_color_label.configure(text='Edge Color')
@@ -234,11 +236,6 @@ if __name__ == '__main__':
     es_entry.bind('<Return>', graph_viewer.update_es_thickness)
 
     graph_viewer.set_components_customizers(tk_factory)
-
-    for row in range(11):
-        right_canvas_frame.rowconfigure(row, weight=1)
-    for col in range(2):
-        right_canvas_frame.columnconfigure(col, weight=1)
 
     graph_viewer.update_ns_view()
     graph_viewer.update_es_view()
