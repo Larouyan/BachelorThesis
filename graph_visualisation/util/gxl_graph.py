@@ -101,6 +101,7 @@ class ParsedGxlGraph:
         Parameters
         ----------
         root: gxl element
+            root of ET tree
         mode: str
             either 'edge' or 'node'
 
@@ -162,7 +163,8 @@ class ParsedGxlGraph:
     @staticmethod
     def get_graph_attr(root) -> tuple:
         """
-        Gets the information attributes of the whole graph:
+        Gets the information attributes of the whole graph
+
         Parameters
         ----------
         root: gxl element
@@ -182,9 +184,11 @@ class ParsedGxlGraph:
     def get_edges(root, shift=0) -> list:
         """
         Get the start and end points of every edge and store them in a list of lists (from the element tree, gxl)
+
         Parameters
         ----------
         root: gxl element
+            root of ET tree
 
         Returns
         -------
