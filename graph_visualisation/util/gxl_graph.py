@@ -96,7 +96,7 @@ class ParsedGxlGraph:
 
     def get_features(self, root, mode):
         """
-        get a list of the node features out of the element tree (gxl)
+        get a list of the node or edge features out of the element tree (gxl)
 
         Parameters
         ----------
@@ -107,7 +107,7 @@ class ParsedGxlGraph:
 
         Returns
         -------
-        tuple ([str], [mixed values]], int)
+        tuple ([str], [[mixed values]])
             list of all node features for that tree
             ([feature name 1, feature name 2, ...],  [[feature 1 of node 1, feature 2 of node 1, ...], [feature 1 of node 2, ...], ...])
         """
@@ -144,7 +144,8 @@ class ParsedGxlGraph:
 
         Parameters
         ----------
-        root:
+        root: gxl element
+            root of ET tree
 
         Returns
         -------
@@ -189,6 +190,8 @@ class ParsedGxlGraph:
         ----------
         root: gxl element
             root of ET tree
+        shift: int
+            if the smallest id of the nodes is not 0, then shift the edge indexing to start from 0.
 
         Returns
         -------
@@ -212,7 +215,7 @@ class ParsedGxlGraph:
         return edge_list
 
     @staticmethod
-    def decode_feature(f) -> str:
+    def decode_feature(f):
         data_types = {'string': str,
                       'float': float,
                       'int': int}
