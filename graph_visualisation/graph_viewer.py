@@ -101,6 +101,7 @@ class GraphViewer:
 
     def get_color_by_feature(self):
         """
+        Get the feature chosen by the user to correctly color the nodes.
         :return: Selected feature modifying the 'None' string to None keyword.
         """
         if self.color_by_feature.get() == 'None':
@@ -248,6 +249,7 @@ class GraphViewer:
             # if user pass no number for thickness -> rewrite previous one
             es_entry.insert(0, str(edge_style['thickness']))
         else:
+            # update value
             edge_style['thickness'] = int(es_entry.get())
             self.onselect()
 
