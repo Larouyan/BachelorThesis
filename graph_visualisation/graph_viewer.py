@@ -17,6 +17,17 @@ from util.default_config import node_style, edge_style
 
 class GraphViewer:
     def __init__(self, img_dir, gxl_dir, color_by_feature, cb_blank, transparency, scaling, selected_node):
+        """
+        This class provides all the methods associated to widgets and update the GUI if necessary.
+
+        :param img_dir: path to the image folder
+        :param gxl_dir: path to the gxl graph folder
+        :param color_by_feature: name of the feature the nodes should be colored by
+        :param cb_blank: boolean which is true if the graph can be drawn on a blank background when no image is found.
+        :param transparency: transparency of the image
+        :param scaling: scaling of the graph
+        :param selected_node: selected node for the customization (e.g. tumorbud, lymphocyte)
+        """
         self.img_dir = img_dir
         self.gxl_dir = gxl_dir
         self.color_by_feature = color_by_feature
