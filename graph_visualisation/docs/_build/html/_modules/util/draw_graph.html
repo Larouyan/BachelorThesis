@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>util.draw_graph &mdash; Graph visualisation 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Graph visualisation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">graph_visualisation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Graph visualisation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">util.draw_graph</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for util.draw_graph</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+
+
+<div class="viewcode-block" id="MplColorHelper"><a class="viewcode-back" href="../../util.html#util.draw_graph.MplColorHelper">[docs]</a><span class="k">class</span> <span class="nc">MplColorHelper</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmap_name</span><span class="p">,</span> <span class="n">nb_colors</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_name</span> <span class="o">=</span> <span class="n">cmap_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">nb_colors</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scalarMap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="p">(</span><span class="n">norm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cmap</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MplColorHelper.get_rgb"><a class="viewcode-back" href="../../util.html#util.draw_graph.MplColorHelper.get_rgb">[docs]</a>    <span class="k">def</span> <span class="nf">get_rgb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="mi">255</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalarMap</span><span class="o">.</span><span class="n">to_rgba</span><span class="p">(</span><span class="n">val</span><span class="p">)][:</span><span class="mi">3</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="GraphDrawer"><a class="viewcode-back" href="../../util.html#util.draw_graph.GraphDrawer">[docs]</a><span class="k">class</span> <span class="nc">GraphDrawer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">color_by_feature</span><span class="p">,</span> <span class="n">node_style</span><span class="p">,</span> <span class="n">edge_style</span><span class="p">,</span> <span class="n">scaling</span><span class="p">,</span>
+                 <span class="n">transparency</span><span class="p">,</span> <span class="n">current_node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class draws the graph on the image</span>
+
+<span class="sd">        :param graph: parsed GxlGraph</span>
+<span class="sd">        :param img: image that the graphs is drawn on</span>
+<span class="sd">        :param color_by_feature: name of the feature to color by</span>
+<span class="sd">        :param node_style: dictionary with the node style</span>
+<span class="sd">        :param edge_style: dictionary with the edge style</span>
+<span class="sd">        :param scaling: scaling for the x,y coordinates (in case they are not in pixels)</span>
+<span class="sd">        :param transparency: transparency of the original image</span>
+<span class="sd">        :param current_node: the current node selected in the node style option menu</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transparency</span> <span class="o">=</span> <span class="n">transparency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img</span> <span class="o">=</span> <span class="n">img</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="o">=</span> <span class="n">scaling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">file_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color_by_feature</span> <span class="o">=</span> <span class="n">color_by_feature</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_node</span> <span class="o">=</span> <span class="n">current_node</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_style</span> <span class="o">=</span> <span class="n">node_style</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_style</span> <span class="o">=</span> <span class="n">edge_style</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">img</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_img</span>
+
+    <span class="nd">@img</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">img</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+        <span class="c1"># Add alpha layer</span>
+        <span class="n">bgra</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2BGRA</span><span class="p">)</span>
+        <span class="c1"># Set alpha layer semi-transparent with Numpy indexing, B=0, G=1, R=2, A=3</span>
+        <span class="n">bgra</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transparency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_img</span> <span class="o">=</span> <span class="n">bgra</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">node_style</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_config</span>
+
+    <span class="nd">@node_style</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">node_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_config</span><span class="p">):</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;thickness&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">node_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_by_feature</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">node_config</span> <span class="o">=</span> <span class="n">default</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nb_diff_features</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">color_by_features</span><span class="p">)))</span>
+                <span class="n">color_mixer</span> <span class="o">=</span> <span class="n">MplColorHelper</span><span class="p">(</span><span class="s1">&#39;Spectral&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">nb_diff_features</span><span class="p">))</span>
+                <span class="n">node_config</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">color_mixer</span><span class="o">.</span><span class="n">get_rgb</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span>
+                               <span class="nb">enumerate</span><span class="p">(</span><span class="n">nb_diff_features</span><span class="p">)}</span>
+                <span class="n">node_config</span><span class="p">[</span><span class="s1">&#39;thickness&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node_config</span> <span class="o">=</span> <span class="n">node_config</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">edge_style</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edge_config</span>
+
+    <span class="nd">@edge_style</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">edge_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge_config</span><span class="p">):</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="s1">&#39;thickness&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;lineType&#39;</span><span class="p">:</span> <span class="n">cv2</span><span class="o">.</span><span class="n">LINE_AA</span><span class="p">}</span>  <span class="c1">#</span>
+        <span class="k">if</span> <span class="n">edge_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">edge_config</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">edge_config</span><span class="p">)</span> <span class="o">!=</span> <span class="n">default</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">default</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">edge_config</span><span class="p">:</span>
+                    <span class="n">edge_config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edge_config</span> <span class="o">=</span> <span class="n">edge_config</span>
+
+<div class="viewcode-block" id="GraphDrawer.get_image"><a class="viewcode-back" href="../../util.html#util.draw_graph.GraphDrawer.get_image">[docs]</a>    <span class="k">def</span> <span class="nf">get_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw the graph (nodes + edges) on the image.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            image with the graph drawn</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x_y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">x_y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span><span class="p">)])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x_y</span> <span class="ow">in</span>
+                  <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">node_positions</span><span class="p">)}</span>
+
+        <span class="c1"># draw the edges</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+            <span class="n">pt1</span><span class="p">,</span> <span class="n">pt2</span> <span class="o">=</span> <span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">points</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">pt1</span><span class="p">,</span> <span class="n">pt2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">],</span> <span class="n">thickness</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_style</span><span class="p">[</span><span class="s1">&#39;thickness&#39;</span><span class="p">],</span>
+                           <span class="n">lineType</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_style</span><span class="p">[</span><span class="s1">&#39;lineType&#39;</span><span class="p">])</span>
+
+        <span class="c1"># draw the points (according to the type, if applicable)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_by_feature</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">color_by_features</span><span class="p">,</span> <span class="n">points</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">node_style</span><span class="p">[</span><span class="n">feature</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                                 <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">node_style</span><span class="p">[</span><span class="n">feature</span><span class="p">][</span><span class="s1">&#39;color&#39;</span><span class="p">],</span>
+                                 <span class="n">thickness</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">node_style</span><span class="p">[</span><span class="s1">&#39;thickness&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># default = {&#39;color&#39;: (47, 130, 224, 255), &#39;radius&#39;: 20, &#39;thickness&#39;: -1}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">node_style</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_node</span><span class="p">][</span><span class="s1">&#39;radius&#39;</span><span class="p">],</span>
+                                 <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">node_style</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_node</span><span class="p">][</span><span class="s1">&#39;color&#39;</span><span class="p">],</span>
+                                 <span class="n">thickness</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">node_style</span><span class="p">[</span><span class="s1">&#39;thickness&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">img</span></div>
+
+<div class="viewcode-block" id="GraphDrawer.save"><a class="viewcode-back" href="../../util.html#util.draw_graph.GraphDrawer.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the image into the output path given</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            output_path: path to the output directory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">-vis.png&#39;</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_image</span><span class="p">(),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2BGRA</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Visualization saved to </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Yannis Laaroussi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

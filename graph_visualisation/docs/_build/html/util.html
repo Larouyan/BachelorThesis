@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>util package &mdash; Graph visualisation 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="vis_app module" href="vis_app.html" />
+    <link rel="prev" title="gui package" href="gui.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Graph visualisation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">graph_visualisation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="graph_viewer.html">graph_viewer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html">gui package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">util package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-util.default_config">util.default_config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-util.draw_graph">util.draw_graph module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-util.graph_plotter">util.graph_plotter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-util.gxl_graph">util.gxl_graph module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-util">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vis_app.html">vis_app module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graph visualisation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">graph_visualisation</a></li>
+      <li class="breadcrumb-item active">util package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/util.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="util-package">
+<h1>util package<a class="headerlink" href="#util-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-util.default_config">
+<span id="util-default-config-module"></span><h2>util.default_config module<a class="headerlink" href="#module-util.default_config" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-util.draw_graph">
+<span id="util-draw-graph-module"></span><h2>util.draw_graph module<a class="headerlink" href="#module-util.draw_graph" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="util.draw_graph.GraphDrawer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">util.draw_graph.</span></span><span class="sig-name descname"><span class="pre">GraphDrawer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_by_feature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_style</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_style</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transparency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/draw_graph.html#GraphDrawer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.draw_graph.GraphDrawer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="util.draw_graph.GraphDrawer.edge_style">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">edge_style</span></span><em class="property"><span class="pre">:</span> <span class="pre">dict</span></em><a class="headerlink" href="#util.draw_graph.GraphDrawer.edge_style" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.draw_graph.GraphDrawer.get_image">
+<span class="sig-name descname"><span class="pre">get_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/draw_graph.html#GraphDrawer.get_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.draw_graph.GraphDrawer.get_image" title="Permalink to this definition"></a></dt>
+<dd><p>Draw the graph (nodes + edges) on the image.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>image with the graph drawn</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="util.draw_graph.GraphDrawer.img">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">img</span></span><a class="headerlink" href="#util.draw_graph.GraphDrawer.img" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="util.draw_graph.GraphDrawer.node_style">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">node_style</span></span><em class="property"><span class="pre">:</span> <span class="pre">dict</span></em><a class="headerlink" href="#util.draw_graph.GraphDrawer.node_style" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.draw_graph.GraphDrawer.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/draw_graph.html#GraphDrawer.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.draw_graph.GraphDrawer.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save the image into the output path given</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>output_path: path to the output directory</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="util.draw_graph.MplColorHelper">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">util.draw_graph.</span></span><span class="sig-name descname"><span class="pre">MplColorHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmap_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_colors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/draw_graph.html#MplColorHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.draw_graph.MplColorHelper" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="util.draw_graph.MplColorHelper.get_rgb">
+<span class="sig-name descname"><span class="pre">get_rgb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/draw_graph.html#MplColorHelper.get_rgb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.draw_graph.MplColorHelper.get_rgb" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-util.graph_plotter">
+<span id="util-graph-plotter-module"></span><h2>util.graph_plotter module<a class="headerlink" href="#module-util.graph_plotter" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="util.graph_plotter.graph_plotter">
+<span class="sig-prename descclassname"><span class="pre">util.graph_plotter.</span></span><span class="sig-name descname"><span class="pre">graph_plotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gxl_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_by_feature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_style</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_style</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transparency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/graph_plotter.html#graph_plotter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.graph_plotter.graph_plotter" title="Permalink to this definition"></a></dt>
+<dd><p>This function draws a graph on an image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gxl_filepath</strong> – path to the gxl file with the graph</p></li>
+<li><p><strong>img_filepath</strong> – path to the corresponding image file</p></li>
+<li><p><strong>color_by_feature</strong> – name of the feature the nodes should be colored by</p></li>
+<li><p><strong>node_style</strong> – dictionary with the node style (color and radius)</p></li>
+<li><p><strong>edge_style</strong> – color and thickness of edges (color and thickness)</p></li>
+<li><p><strong>scaling</strong> – x,y coordinates will be scaled accordingly (in case they are not in pixel)</p></li>
+<li><p><strong>transparency</strong> – transparency of the image</p></li>
+<li><p><strong>current_node</strong> – the current node selected in the node style option menu</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-util.gxl_graph">
+<span id="util-gxl-graph-module"></span><h2>util.gxl_graph module<a class="headerlink" href="#module-util.gxl_graph" title="Permalink to this headline"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="util.gxl_graph.InvalidFileException">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">util.gxl_graph.</span></span><span class="sig-name descname"><span class="pre">InvalidFileException</span></span><a class="reference internal" href="_modules/util/gxl_graph.html#InvalidFileException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.InvalidFileException" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">util.gxl_graph.</span></span><span class="sig-name descname"><span class="pre">ParsedGxlGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_gxl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_by_feature</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.decode_feature">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">decode_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph.decode_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.decode_feature" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.filepath">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">filepath</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.filepath" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.get_edge_feature_values">
+<span class="sig-name descname"><span class="pre">get_edge_feature_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph.get_edge_feature_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.get_edge_feature_values" title="Permalink to this definition"></a></dt>
+<dd><p>Get the feature values of the edges for a given feature name</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>feature: feature name</p>
+</dd>
+<dt>Returns:</dt><dd><p>list [feature of edge 1, feature of edge 2, …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.get_edge_features">
+<span class="sig-name descname"><span class="pre">get_edge_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph.get_edge_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.get_edge_features" title="Permalink to this definition"></a></dt>
+<dd><p>Get edge feature names/values</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>root: root of ET tree</p>
+</dd>
+<dt>Returns:</dt><dd><p>tuple  ([str], [[mixed values]], int)
+list of all edge features</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.get_edges">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph.get_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.get_edges" title="Permalink to this definition"></a></dt>
+<dd><p>Get the start and end points of every edge and store them in a list of lists (from the element tree, gxl)</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>root: root of ET tree
+shift: int, if the smallest id of the nodes is not 0, then shift the edge indexing to start from 0.</p>
+</dd>
+<dt>Returns:</dt><dd><p>list [[int, int]]
+list of indices of connected nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.get_features">
+<span class="sig-name descname"><span class="pre">get_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph.get_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.get_features" title="Permalink to this definition"></a></dt>
+<dd><p>Get a list of the node or edge features out of the element tree (gxl)</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>root: root of ET tree
+mode: either ‘edge’ or ‘node’</p>
+</dd>
+<dt>Returns:</dt><dd><p>tuple ([str], [[mixed values]])
+list of all node features for that tree ([feature name 1, feature name 2, …],
+[[feature 1 of node 1, feature 2 of node 1, …], [feature 1 of node 2, …], …])</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.get_graph_attr">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_graph_attr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph.get_graph_attr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.get_graph_attr" title="Permalink to this definition"></a></dt>
+<dd><p>Get the information attributes of the whole graph</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>root: root of ET tree</p>
+</dd>
+<dt>Returns:</dt><dd><p>tuple (str, bool, str)
+ID of the graph, Edge IDs present (true / false), edge mode (directed / undirected)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.get_node_feature_values">
+<span class="sig-name descname"><span class="pre">get_node_feature_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph.get_node_feature_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.get_node_feature_values" title="Permalink to this definition"></a></dt>
+<dd><p>Get the feature values of the nodes for a given feature name</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>feature: feature name</p>
+</dd>
+<dt>Returns:</dt><dd><p>list [feature of node 1, feature of node 2, …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.get_node_features">
+<span class="sig-name descname"><span class="pre">get_node_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph.get_node_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.get_node_features" title="Permalink to this definition"></a></dt>
+<dd><p>Get node feature names/values and the smallest id</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>root: root of ET tree</p>
+</dd>
+<dt>Returns:</dt><dd><p>tuple  ([str], [[mixed values]], int)
+list of all node features and the minimal id</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.nb_of_edges">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">nb_of_edges</span></span><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.nb_of_edges" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.nb_of_nodes">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">nb_of_nodes</span></span><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.nb_of_nodes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.sanity_check">
+<span class="sig-name descname"><span class="pre">sanity_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph.sanity_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.sanity_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check if files contain the expected content</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>root: root of ET tree</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="util.gxl_graph.ParsedGxlGraph.setup_graph_features">
+<span class="sig-name descname"><span class="pre">setup_graph_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/gxl_graph.html#ParsedGxlGraph.setup_graph_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#util.gxl_graph.ParsedGxlGraph.setup_graph_features" title="Permalink to this definition"></a></dt>
+<dd><p>Parses the gxl file and sets the following graph properties
+- graph info: graph_id, edge_ids_present and edgemode
+- node: node_features, node_feature_names, and node_position
+- edge: edges, edge_features and edge_feature_names</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-util">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-util" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gui.html" class="btn btn-neutral float-left" title="gui package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="vis_app.html" class="btn btn-neutral float-right" title="vis_app module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Yannis Laaroussi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

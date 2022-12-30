@@ -54,7 +54,6 @@ class ParsedGxlGraph:
         - graph info: graph_id, edge_ids_present and edgemode
         - node: node_features, node_feature_names, and node_position
         - edge: edges, edge_features and edge_feature_names
-
         """
         tree = ET.parse(self.filepath)
         root = tree.getroot()
@@ -87,8 +86,12 @@ class ParsedGxlGraph:
     def get_node_feature_values(self, feature) -> list:
         """
         Get the feature values of the nodes for a given feature name
-        :param feature: feature name
-        :return: list [feature of node 1, feature of node 2, ...]
+
+        Parameters:
+            feature: feature name
+
+        Returns:
+            list [feature of node 1, feature of node 2, ...]
         """
         feature_ind = self.node_feature_names.index(feature)
         all_features = [nf[feature_ind] for nf in self.node_features]
@@ -97,8 +100,12 @@ class ParsedGxlGraph:
     def get_edge_feature_values(self, feature) -> list:
         """
         Get the feature values of the edges for a given feature name
-        :param feature: feature name
-        :return: list [feature of edge 1, feature of edge 2, ...]
+
+        Parameters:
+            feature: feature name
+
+        Returns:
+            list [feature of edge 1, feature of edge 2, ...]
         """
         feature_ind = self.edge_features.index(feature)
         all_features = [[nf][feature_ind] for nf in self.edge_features]
@@ -107,11 +114,15 @@ class ParsedGxlGraph:
     def get_features(self, root, mode):
         """
         Get a list of the node or edge features out of the element tree (gxl)
-        :param root: root of ET tree
-        :param mode: either 'edge' or 'node'
-        :return:  tuple ([str], [[mixed values]])
-            list of all node features for that tree
-            ([feature name 1, feature name 2, ...],  [[feature 1 of node 1, feature 2 of node 1, ...], [feature 1 of node 2, ...], ...])
+
+        Parameters:
+            root: root of ET tree
+            mode: either 'edge' or 'node'
+
+        Returns:
+            tuple ([str], [[mixed values]])
+            list of all node features for that tree ([feature name 1, feature name 2, ...],
+            [[feature 1 of node 1, feature 2 of node 1, ...], [feature 1 of node 2, ...], ...])
         """
         features_info = [[feature for feature in graph_element] for graph_element in root.iter(mode)]
         if len(features_info) > 0:
@@ -132,8 +143,12 @@ class ParsedGxlGraph:
     def get_node_features(self, root) -> tuple:
         """
         Get node feature names/values and the smallest id
-        :param root: root of ET tree
-        :return: tuple  ([str], [[mixed values]], int)
+
+        Parameters:
+            root: root of ET tree
+
+        Returns:
+            tuple  ([str], [[mixed values]], int)
             list of all node features and the minimal id
         """
         # minimal node id -> used to shift the edge indexing to 0 (in case node enumeration does not start with 0)
@@ -145,9 +160,13 @@ class ParsedGxlGraph:
     def get_edge_features(self, root) -> tuple:
         """
         Get edge feature names/values
-        :param root: root of ET tree
-        :return: tuple  ([str], [[mixed values]], int)
-            list of all edge features
+
+        Parameters:
+            root: root of ET tree
+
+        Returns:
+             tuple  ([str], [[mixed values]], int)
+             list of all edge features
         """
         feature_names, features = self.get_features(root, 'edge')
         return feature_names, features
@@ -155,7 +174,9 @@ class ParsedGxlGraph:
     def sanity_check(self, root):
         """
         Check if files contain the expected content
-        :param root: root of ET tree
+
+        Parameters:
+            root: root of ET tree
         """
         # check if node, edge, edgeid, edgemode, edgemode keyword exists
         if len([i.attrib for i in root.iter('graph')][0]) != 3:
@@ -171,8 +192,12 @@ class ParsedGxlGraph:
     def get_graph_attr(root) -> tuple:
         """
         Get the information attributes of the whole graph
-        :param root: root of ET tree
-        :return: tuple (str, bool, str)
+
+        Parameters:
+            root: root of ET tree
+
+        Returns:
+            tuple (str, bool, str)
             ID of the graph, Edge IDs present (true / false), edge mode (directed / undirected)
         """
         graph = [i.attrib for i in root.iter('graph')]
@@ -184,9 +209,13 @@ class ParsedGxlGraph:
     def get_edges(root, shift=0) -> list:
         """
         Get the start and end points of every edge and store them in a list of lists (from the element tree, gxl)
-        :param root: root of ET tree
-        :param shift: int, if the smallest id of the nodes is not 0, then shift the edge indexing to start from 0.
-        :return: [[int, int]]
+
+        Parameters:
+            root: root of ET tree
+            shift: int, if the smallest id of the nodes is not 0, then shift the edge indexing to start from 0.
+
+        Returns:
+            list [[int, int]]
             list of indices of connected nodes
         """
         edge_list = []

@@ -20,9 +20,11 @@ class TkFactory(GUIFactory):
     def add(self, name: str, widget: tkinter, is_customizer: bool = False):
         """
         Add a given widget to dictionaries components and customizers ensuring that the component is unique.
-        :param name: identifier for a widget.
-        :param widget: tkinter widget.
-        :param is_customizer: boolean which is true if the widget is considered as a modifier.
+
+        Parameters:
+            name: identifier for a widget.
+            widget: tkinter widget.
+            is_customizer: boolean which is true if the widget is considered as a modifier.
         """
         if name in self.components:
             print(f'The component {name} has already been added')

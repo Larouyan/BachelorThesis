@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>util.gxl_graph &mdash; Graph visualisation 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Graph visualisation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">graph_visualisation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Graph visualisation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">util.gxl_graph</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for util.gxl_graph</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+
+<div class="viewcode-block" id="InvalidFileException"><a class="viewcode-back" href="../../util.html#util.gxl_graph.InvalidFileException">[docs]</a><span class="k">class</span> <span class="nc">InvalidFileException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ParsedGxlGraph"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph">[docs]</a><span class="k">class</span> <span class="nc">ParsedGxlGraph</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_gxl</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">color_by_feature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class contains all the information encoded in a single gxl file = one graph</span>
+
+<span class="sd">        :param path_to_gxl: path to the gxl file</span>
+<span class="sd">        :param color_by_feature: modify the color of the nodes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">path_to_gxl</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="c1"># name of the gxl file (without the ending)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">color_by_feature</span> <span class="o">=</span> <span class="n">color_by_feature</span>
+
+        <span class="c1"># parsing the gxl</span>
+        <span class="c1"># sets up the following properties: node_features, node_feature_names, edges, edge_features, edge_feature_names,</span>
+        <span class="c1"># node_position, graph_id, edge_ids_present and edgemode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_graph_features</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filepath</span>
+
+    <span class="nd">@filepath</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_gxl</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path_to_gxl</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File </span><span class="si">{</span><span class="n">path_to_gxl</span><span class="si">}</span><span class="s1"> does not exist.&#39;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filepath</span> <span class="o">=</span> <span class="n">path_to_gxl</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nb_of_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_features</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nb_of_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_features</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ParsedGxlGraph.setup_graph_features"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph.setup_graph_features">[docs]</a>    <span class="k">def</span> <span class="nf">setup_graph_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parses the gxl file and sets the following graph properties</span>
+<span class="sd">        - graph info: graph_id, edge_ids_present and edgemode</span>
+<span class="sd">        - node: node_features, node_feature_names, and node_position</span>
+<span class="sd">        - edge: edges, edge_features and edge_feature_names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+
+        <span class="c1"># verify that the file contains the expected attributes (node, edge, id, edgeids and edgemode)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sanity_check</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_ids_present</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edgemode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph_attr</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>  <span class="c1"># (str, bool, str)</span>
+
+        <span class="c1"># nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_feature_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_features</span><span class="p">,</span> <span class="n">min_node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node_features</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>  <span class="c1"># ([str], list)</span>
+
+        <span class="c1"># Add the coordinates to their own variable</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_feature_names</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="s1">&#39;x&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_feature_names</span> <span class="ow">and</span> <span class="s1">&#39;y&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_feature_names</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Graph does not contain x or y coordinates as features. &#39;</span>
+                  <span class="s1">&#39;Coordinates have to be specified in the gxl file as &quot;x&quot; and &quot;y&quot;.&#39;</span><span class="p">)</span>
+
+        <span class="n">x_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_feature_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+        <span class="n">y_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_feature_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_positions</span> <span class="o">=</span> <span class="p">[[</span><span class="n">node</span><span class="p">[</span><span class="n">x_ind</span><span class="p">],</span> <span class="n">node</span><span class="p">[</span><span class="n">y_ind</span><span class="p">]]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_features</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_by_feature</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">color_by_features</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">node_feature_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color_by_feature</span><span class="p">)]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">node_features</span><span class="p">]</span>
+
+        <span class="c1"># edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_edges</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="n">min_node_id</span><span class="p">)</span>  <span class="c1"># [[int, int]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_feature_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_edge_features</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>  <span class="c1"># ([str], list)</span></div>
+
+<div class="viewcode-block" id="ParsedGxlGraph.get_node_feature_values"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph.get_node_feature_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_feature_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the feature values of the nodes for a given feature name</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            feature: feature name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list [feature of node 1, feature of node 2, ...]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">feature_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_feature_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+        <span class="n">all_features</span> <span class="o">=</span> <span class="p">[</span><span class="n">nf</span><span class="p">[</span><span class="n">feature_ind</span><span class="p">]</span> <span class="k">for</span> <span class="n">nf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_features</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">all_features</span></div>
+
+<div class="viewcode-block" id="ParsedGxlGraph.get_edge_feature_values"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph.get_edge_feature_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_edge_feature_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the feature values of the edges for a given feature name</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            feature: feature name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list [feature of edge 1, feature of edge 2, ...]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">feature_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_features</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+        <span class="n">all_features</span> <span class="o">=</span> <span class="p">[[</span><span class="n">nf</span><span class="p">][</span><span class="n">feature_ind</span><span class="p">]</span> <span class="k">for</span> <span class="n">nf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_features</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">all_features</span></div>
+
+<div class="viewcode-block" id="ParsedGxlGraph.get_features"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph.get_features">[docs]</a>    <span class="k">def</span> <span class="nf">get_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a list of the node or edge features out of the element tree (gxl)</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            root: root of ET tree</span>
+<span class="sd">            mode: either &#39;edge&#39; or &#39;node&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple ([str], [[mixed values]])</span>
+<span class="sd">            list of all node features for that tree ([feature name 1, feature name 2, ...],</span>
+<span class="sd">            [[feature 1 of node 1, feature 2 of node 1, ...], [feature 1 of node 2, ...], ...])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">features_info</span> <span class="o">=</span> <span class="p">[[</span><span class="n">feature</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">graph_element</span><span class="p">]</span> <span class="k">for</span> <span class="n">graph_element</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="n">mode</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">features_info</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">features_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># check if we have features to generate</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">decode_feature</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">graph_element</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">feature</span> <span class="k">if</span>
+                         <span class="n">feature</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">feature_names</span><span class="p">]</span> <span class="k">for</span> <span class="n">graph_element</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="n">mode</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">feature_names</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">features</span></div>
+
+<div class="viewcode-block" id="ParsedGxlGraph.get_node_features"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph.get_node_features">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get node feature names/values and the smallest id</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            root: root of ET tree</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple  ([str], [[mixed values]], int)</span>
+<span class="sd">            list of all node features and the minimal id</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># minimal node id -&gt; used to shift the edge indexing to 0 (in case node enumeration does not start with 0)</span>
+        <span class="n">regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;_(\d+)$&#39;</span>
+        <span class="n">node_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">graph_element</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">graph_element</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;node&#39;</span><span class="p">)]</span>
+        <span class="n">feature_names</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_features</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;node&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">node_ids</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ParsedGxlGraph.get_edge_features"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph.get_edge_features">[docs]</a>    <span class="k">def</span> <span class="nf">get_edge_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get edge feature names/values</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            root: root of ET tree</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             tuple  ([str], [[mixed values]], int)</span>
+<span class="sd">             list of all edge features</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">feature_names</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_features</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;edge&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">features</span></div>
+
+<div class="viewcode-block" id="ParsedGxlGraph.sanity_check"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph.sanity_check">[docs]</a>    <span class="k">def</span> <span class="nf">sanity_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if files contain the expected content</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            root: root of ET tree</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if node, edge, edgeid, edgemode, edgemode keyword exists</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">attrib</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;graph&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidFileException</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;node&#39;</span><span class="p">)])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span><span class="si">}</span><span class="s1"> is an empty graph!&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">InvalidFileException</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">([</span><span class="n">edge</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;edge&#39;</span><span class="p">)])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span><span class="si">}</span><span class="s1"> has no edges!&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ParsedGxlGraph.get_graph_attr"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph.get_graph_attr">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_graph_attr</span><span class="p">(</span><span class="n">root</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the information attributes of the whole graph</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            root: root of ET tree</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple (str, bool, str)</span>
+<span class="sd">            ID of the graph, Edge IDs present (true / false), edge mode (directed / undirected)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">attrib</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;graph&#39;</span><span class="p">)]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">g</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">g</span><span class="p">[</span><span class="s1">&#39;edgeids&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">,</span> <span class="n">g</span><span class="p">[</span><span class="s1">&#39;edgemode&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ParsedGxlGraph.get_edges"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph.get_edges">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_edges</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the start and end points of every edge and store them in a list of lists (from the element tree, gxl)</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            root: root of ET tree</span>
+<span class="sd">            shift: int, if the smallest id of the nodes is not 0, then shift the edge indexing to start from 0.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list [[int, int]]</span>
+<span class="sd">            list of indices of connected nodes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">edge_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;_(\d+)$&#39;</span>
+        <span class="n">start_points</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;from&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;edge&#39;</span><span class="p">)]</span>
+        <span class="n">end_points</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">edge</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;to&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;edge&#39;</span><span class="p">)]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">start_points</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">end_points</span><span class="p">)</span>
+
+        <span class="c1"># move enumeration start to 0 if necessary</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">start_points</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">end_points</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">shift</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">start_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="n">shift</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">start_points</span><span class="p">]</span>
+                <span class="n">end_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="n">shift</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">end_points</span><span class="p">]</span>
+            <span class="n">edge_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">start_points</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">end_points</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">start_points</span><span class="p">))]</span>
+
+        <span class="k">return</span> <span class="n">edge_list</span></div>
+
+<div class="viewcode-block" id="ParsedGxlGraph.decode_feature"><a class="viewcode-back" href="../../util.html#util.gxl_graph.ParsedGxlGraph.decode_feature">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">decode_feature</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="n">data_types</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                      <span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                      <span class="s1">&#39;int&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">}</span>
+
+        <span class="c1"># convert the feature value to the correct data type as specified in the gxl</span>
+        <span class="k">return</span> <span class="n">data_types</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">tag</span><span class="p">](</span><span class="n">f</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Yannis Laaroussi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

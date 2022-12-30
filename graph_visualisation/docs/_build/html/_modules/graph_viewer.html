@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>graph_viewer &mdash; Graph visualisation 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Graph visualisation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">graph_visualisation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Graph visualisation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">graph_viewer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for graph_viewer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">filedialog</span><span class="p">,</span> <span class="n">colorchooser</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">ImageTk</span><span class="p">,</span> <span class="n">Image</span>
+
+<span class="kn">from</span> <span class="nn">util.graph_plotter</span> <span class="kn">import</span> <span class="n">graph_plotter</span>
+<span class="kn">from</span> <span class="nn">gui.tk_factory</span> <span class="kn">import</span> <span class="n">TkFactory</span>
+<span class="kn">from</span> <span class="nn">util.draw_graph</span> <span class="kn">import</span> <span class="n">GraphDrawer</span>
+<span class="kn">from</span> <span class="nn">util.gxl_graph</span> <span class="kn">import</span> <span class="n">ParsedGxlGraph</span>
+
+<span class="c1"># Import configuration of the nodes and edges</span>
+<span class="kn">from</span> <span class="nn">util.default_config</span> <span class="kn">import</span> <span class="n">node_style</span><span class="p">,</span> <span class="n">edge_style</span>
+
+
+<div class="viewcode-block" id="GraphViewer"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer">[docs]</a><span class="k">class</span> <span class="nc">GraphViewer</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_dir</span><span class="p">,</span> <span class="n">gxl_dir</span><span class="p">,</span> <span class="n">color_by_feature</span><span class="p">,</span> <span class="n">cb_blank</span><span class="p">,</span> <span class="n">transparency</span><span class="p">,</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">selected_node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class provides all the methods associated to widgets and update the GUI if necessary.</span>
+
+<span class="sd">        :param img_dir: path to the image folder</span>
+<span class="sd">        :param gxl_dir: path to the gxl graph folder</span>
+<span class="sd">        :param color_by_feature: name of the feature the nodes should be colored by</span>
+<span class="sd">        :param cb_blank: boolean which is true if the graph can be drawn on a blank background when no image is found.</span>
+<span class="sd">        :param transparency: transparency of the image</span>
+<span class="sd">        :param scaling: scaling of the graph</span>
+<span class="sd">        :param selected_node: selected node for the customization (e.g. tumorbud, lymphocyte)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img_dir</span> <span class="o">=</span> <span class="n">img_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gxl_dir</span> <span class="o">=</span> <span class="n">gxl_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color_by_feature</span> <span class="o">=</span> <span class="n">color_by_feature</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cb_blank</span> <span class="o">=</span> <span class="n">cb_blank</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transparency</span> <span class="o">=</span> <span class="n">transparency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="o">=</span> <span class="n">scaling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_node</span> <span class="o">=</span> <span class="n">selected_node</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_img</span> <span class="o">=</span> <span class="n">GraphDrawer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listbox_content</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customizers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GraphViewer.set_components_customizers"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.set_components_customizers">[docs]</a>    <span class="k">def</span> <span class="nf">set_components_customizers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factory</span><span class="p">:</span> <span class="n">TkFactory</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the values of the dictionaries components and customizers.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">             factory: TkFactory holding two dictionaries, one for the name and the corresponding tkinter widgets and</span>
+<span class="sd">             the other one for the name and a corresponding boolean value if the component is a customizer or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">get_components</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customizers</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">get_customizers</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphViewer.select_img_dir"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.select_img_dir">[docs]</a>    <span class="k">def</span> <span class="nf">select_img_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ask the user for the directory where the images are.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_dir</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askdirectory</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">new_dir</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">new_dir</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">img_dir</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">new_dir</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphViewer.select_gxl_dir"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.select_gxl_dir">[docs]</a>    <span class="k">def</span> <span class="nf">select_gxl_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ask the user for the directory where the gxl files are.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_dir</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askdirectory</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">new_dir</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">new_dir</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">load_gxl_dir</span><span class="p">(</span><span class="n">new_dir</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphViewer.load_gxl_dir"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.load_gxl_dir">[docs]</a>    <span class="k">def</span> <span class="nf">load_gxl_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the gxl files on the listbox.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            new_dir: directory where the gxl files are.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gxl_dir</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">new_dir</span><span class="p">)</span>
+        <span class="n">listbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;gxl_listbox&#39;</span><span class="p">]</span>
+        <span class="c1"># delete previous gxl dir</span>
+        <span class="n">listbox</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">new_dir</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.gxl&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_dir</span><span class="p">,</span> <span class="n">file</span><span class="p">)):</span>
+                    <span class="n">listbox</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">END</span><span class="p">,</span> <span class="n">file</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">listbox</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">listbox</span><span class="o">.</span><span class="n">select_set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">listbox_content</span> <span class="o">=</span> <span class="n">listbox</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;lb_entry&#39;</span><span class="p">][</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NORMAL</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_graph_features</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">onselect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphViewer.update_gxl_listbox"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.update_gxl_listbox">[docs]</a>    <span class="k">def</span> <span class="nf">update_gxl_listbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the list of gxl files such that it only display files that start with a given pattern.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">             pattern: string given by the user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">listbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;gxl_listbox&#39;</span><span class="p">]</span>
+        <span class="n">listbox</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">listbox_content</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()):</span>
+                <span class="n">listbox</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">END</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphViewer.load_graph_features"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.load_graph_features">[docs]</a>    <span class="k">def</span> <span class="nf">load_graph_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fill the option menu with the graph features in order to color the nodes by features.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parsed</span> <span class="o">=</span> <span class="n">ParsedGxlGraph</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gxl_dir</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gxl_dir</span><span class="o">.</span><span class="n">get</span><span class="p">())[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">parsed</span><span class="o">.</span><span class="n">node_feature_names</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">]]</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="n">cbf_menu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;cbf_menu&#39;</span><span class="p">]</span>
+            <span class="n">cbf_menu</span><span class="p">[</span><span class="s1">&#39;menu&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">feature</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="o">=</span><span class="n">feature</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_by_feature</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="GraphViewer.get_color_by_feature"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.get_color_by_feature">[docs]</a>    <span class="k">def</span> <span class="nf">get_color_by_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the feature chosen by the user to correctly color the nodes.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             Selected feature modifying the &#39;None&#39; string to None keyword.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_by_feature</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;None&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">color_by_feature</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphViewer.save_img"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.save_img">[docs]</a>    <span class="k">def</span> <span class="nf">save_img</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the current image in a directory chosen by the user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askdirectory</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">output_path</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">output_path</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph_img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphViewer.save_all"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.save_all">[docs]</a>    <span class="k">def</span> <span class="nf">save_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save all images in a directory chosen by the user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="n">filedialog</span><span class="o">.</span><span class="n">askdirectory</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">output_path</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">output_path</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">gxl_file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gxl_dir</span><span class="o">.</span><span class="n">get</span><span class="p">()):</span>
+                    <span class="n">gxl_filename</span> <span class="o">=</span> <span class="n">gxl_file</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">img_filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_img_filepath</span><span class="p">(</span><span class="n">gxl_filename</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">img_filepath</span><span class="p">:</span>
+                        <span class="n">gxl_filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gxl_dir</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">gxl_file</span><span class="p">)</span>
+                        <span class="n">temp_graph</span> <span class="o">=</span> <span class="n">graph_plotter</span><span class="p">(</span><span class="n">gxl_filepath</span><span class="o">=</span><span class="n">gxl_filepath</span><span class="p">,</span> <span class="n">img_filepath</span><span class="o">=</span><span class="n">img_filepath</span><span class="p">,</span>
+                                                   <span class="n">color_by_feature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_color_by_feature</span><span class="p">(),</span>
+                                                   <span class="n">node_style</span><span class="o">=</span><span class="n">node_style</span><span class="p">,</span> <span class="n">edge_style</span><span class="o">=</span><span class="n">edge_style</span><span class="p">,</span>
+                                                   <span class="n">scaling</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scaling</span><span class="o">.</span><span class="n">get</span><span class="p">()),</span>
+                                                   <span class="n">transparency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transparency</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                                                   <span class="n">current_node</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_node</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+                        <span class="n">temp_graph</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphViewer.search_img_filepath"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.search_img_filepath">[docs]</a>    <span class="k">def</span> <span class="nf">search_img_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gxl_filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find the image corresponding to the gxl file given in input.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            gxl_filename: name of the gxl file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Path to the corresponding image if exists, otherwise None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">extensions</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="s1">&#39;bmp&#39;</span><span class="p">,</span> <span class="s1">&#39;jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;jpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;gif&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_dir</span><span class="o">.</span><span class="n">get</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;.*&#39;</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">gxl_filename</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;.*&#39;</span><span class="p">,</span> <span class="n">img</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_dir</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">img</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="GraphViewer.onselect"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.onselect">[docs]</a>    <span class="k">def</span> <span class="nf">onselect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw the image with the graph on the canvas</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_dir</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">canvas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;canvas&#39;</span><span class="p">]</span>
+            <span class="n">canvas</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+            <span class="n">listbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;gxl_listbox&#39;</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">listbox</span><span class="o">.</span><span class="n">curselection</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">gxl_filename</span> <span class="o">=</span> <span class="n">listbox</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="c1"># If listbox is unselected then take the previous gxl file which was selected</span>
+                <span class="n">gxl_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_img</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">file_id</span>
+
+            <span class="n">gxl_filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gxl_dir</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">gxl_filename</span> <span class="o">+</span> <span class="s1">&#39;.gxl&#39;</span><span class="p">)</span>
+            <span class="n">img_filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_img_filepath</span><span class="p">(</span><span class="n">gxl_filename</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">img_filepath</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">img_filepath</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cb_blank</span><span class="o">.</span><span class="n">get</span><span class="p">()):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">enable_customisation</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">graph_img</span> <span class="o">=</span> <span class="n">graph_plotter</span><span class="p">(</span><span class="n">gxl_filepath</span><span class="o">=</span><span class="n">gxl_filepath</span><span class="p">,</span> <span class="n">img_filepath</span><span class="o">=</span><span class="n">img_filepath</span><span class="p">,</span>
+                                               <span class="n">color_by_feature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_color_by_feature</span><span class="p">(),</span>
+                                               <span class="n">node_style</span><span class="o">=</span><span class="n">node_style</span><span class="p">,</span> <span class="n">edge_style</span><span class="o">=</span><span class="n">edge_style</span><span class="p">,</span>
+                                               <span class="n">scaling</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scaling</span><span class="o">.</span><span class="n">get</span><span class="p">()),</span> <span class="n">transparency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transparency</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+                                               <span class="n">current_node</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_node</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_img</span><span class="o">.</span><span class="n">get_image</span><span class="p">()</span>
+
+                <span class="n">photo_img</span> <span class="o">=</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span>
+                    <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">canvas</span><span class="o">.</span><span class="n">winfo_width</span><span class="p">(),</span> <span class="n">canvas</span><span class="o">.</span><span class="n">winfo_height</span><span class="p">()),</span>
+                                                <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">))</span>
+                <span class="n">canvas</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">photo_img</span>
+                <span class="n">canvas</span><span class="o">.</span><span class="n">create_image</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">photo_img</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="n">NW</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">disable_customisation</span><span class="p">()</span>
+                <span class="n">canvas</span><span class="o">.</span><span class="n">create_text</span><span class="p">(</span><span class="n">canvas</span><span class="o">.</span><span class="n">winfo_width</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">canvas</span><span class="o">.</span><span class="n">winfo_height</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                                   <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;No image found for the gxl file </span><span class="si">{</span><span class="n">gxl_filename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphViewer.update_ns_view"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.update_ns_view">[docs]</a>    <span class="k">def</span> <span class="nf">update_ns_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update node style (color + radius).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Update node style color label</span>
+        <span class="n">ns_color_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;ns_color_label&#39;</span><span class="p">]</span>
+        <span class="n">ns_color_label</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#</span><span class="si">{:02x}{:02x}{:02x}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">node_style</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_node</span><span class="o">.</span><span class="n">get</span><span class="p">()][</span><span class="s1">&#39;color&#39;</span><span class="p">])</span>
+        <span class="c1"># Update node style radius entry</span>
+        <span class="n">ns_entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;ns_entry&#39;</span><span class="p">]</span>
+        <span class="n">ns_entry</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+        <span class="n">ns_entry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">node_style</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_node</span><span class="o">.</span><span class="n">get</span><span class="p">()][</span><span class="s1">&#39;radius&#39;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">onselect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphViewer.update_ns_radius"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.update_ns_radius">[docs]</a>    <span class="k">def</span> <span class="nf">update_ns_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the radius of the nodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ns_entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;ns_entry&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ns_entry</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="c1"># If user pass no number for the radius -&gt; rewrite previous one</span>
+            <span class="n">ns_entry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">node_style</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_node</span><span class="o">.</span><span class="n">get</span><span class="p">()][</span><span class="s1">&#39;radius&#39;</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node_style</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_node</span><span class="o">.</span><span class="n">get</span><span class="p">()][</span><span class="s1">&#39;radius&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ns_entry</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">onselect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphViewer.update_ns_color"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.update_ns_color">[docs]</a>    <span class="k">def</span> <span class="nf">update_ns_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the color of the nodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_color</span> <span class="o">=</span> <span class="n">colorchooser</span><span class="o">.</span><span class="n">askcolor</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">new_color</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">new_color</span>
+            <span class="n">node_style</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_node</span><span class="o">.</span><span class="n">get</span><span class="p">()][</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_ns_view</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">onselect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphViewer.update_es_view"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.update_es_view">[docs]</a>    <span class="k">def</span> <span class="nf">update_es_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update edge style view (color + thickness).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Update edge style color label</span>
+        <span class="n">es_color_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;es_color_label&#39;</span><span class="p">]</span>
+        <span class="n">es_color_label</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;#</span><span class="si">{:02x}{:02x}{:02x}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">edge_style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">])</span>
+        <span class="c1"># Update edge style thickness entry</span>
+        <span class="n">es_entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;es_entry&#39;</span><span class="p">]</span>
+        <span class="n">es_entry</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">END</span><span class="p">)</span>
+        <span class="n">es_entry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">edge_style</span><span class="p">[</span><span class="s1">&#39;thickness&#39;</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="GraphViewer.update_es_thickness"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.update_es_thickness">[docs]</a>    <span class="k">def</span> <span class="nf">update_es_thickness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the thickness of the edges.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">es_entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="s1">&#39;es_entry&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">es_entry</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="c1"># if user pass no number for thickness -&gt; rewrite previous one</span>
+            <span class="n">es_entry</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">edge_style</span><span class="p">[</span><span class="s1">&#39;thickness&#39;</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># update value</span>
+            <span class="n">edge_style</span><span class="p">[</span><span class="s1">&#39;thickness&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">es_entry</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">onselect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphViewer.update_es_color"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.update_es_color">[docs]</a>    <span class="k">def</span> <span class="nf">update_es_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the color of the edges.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_color</span> <span class="o">=</span> <span class="n">colorchooser</span><span class="o">.</span><span class="n">askcolor</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">new_color</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">new_color</span>
+            <span class="n">edge_style</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_es_view</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">onselect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GraphViewer.disable_customisation"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.disable_customisation">[docs]</a>    <span class="k">def</span> <span class="nf">disable_customisation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the permission to the user to interact with the customisation options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">customizer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">customizers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">customizer</span><span class="p">:</span>
+                <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ns_color_label&#39;</span><span class="p">,</span> <span class="s1">&#39;es_color_label&#39;</span><span class="p">):</span>
+                    <span class="n">component</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="s1">&#39;&lt;Button-1&gt;&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">component</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DISABLED</span></div>
+
+<div class="viewcode-block" id="GraphViewer.enable_customisation"><a class="viewcode-back" href="../graph_viewer.html#graph_viewer.GraphViewer.enable_customisation">[docs]</a>    <span class="k">def</span> <span class="nf">enable_customisation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Give the permission to the user to interact with the customisation options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">customizer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">customizers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">customizer</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ns_color_label&#39;</span><span class="p">:</span>
+                    <span class="n">component</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Button-1&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_ns_color</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;es_color_label&#39;</span><span class="p">:</span>
+                    <span class="n">component</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Button-1&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_es_color</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">component</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NORMAL</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Yannis Laaroussi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

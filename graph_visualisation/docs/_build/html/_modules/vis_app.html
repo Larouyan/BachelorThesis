@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vis_app &#8212; Graph visualisation 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for vis_app</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">ttk</span>
+
+<span class="kn">from</span> <span class="nn">util.default_config</span> <span class="kn">import</span> <span class="n">nodes</span>
+
+<span class="kn">from</span> <span class="nn">gui.tk_factory</span> <span class="kn">import</span> <span class="n">TkFactory</span>
+
+<span class="kn">from</span> <span class="nn">graph_viewer</span> <span class="kn">import</span> <span class="n">GraphViewer</span>
+
+
+<div class="viewcode-block" id="is_int"><a class="viewcode-back" href="../vis_app.html#vis_app.is_int">[docs]</a><span class="k">def</span> <span class="nf">is_int</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if the input parameter is an integer or an empty value.</span>
+<span class="sd">    :param inp: input value</span>
+<span class="sd">    :return: True if inp is an integer or empty value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">inp</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="is_number"><a class="viewcode-back" href="../vis_app.html#vis_app.is_number">[docs]</a><span class="k">def</span> <span class="nf">is_number</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if the input parameter is a float or an empty value.</span>
+<span class="sd">    :param inp: input value</span>
+<span class="sd">    :return: True if inp is a float or empty value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">inp</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># Create tkinter window</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Tk</span><span class="p">()</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Graph Viewer&#39;</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">grid_columnconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">grid_rowconfigure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">resizable</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">iconbitmap</span><span class="p">(</span><span class="s1">&#39;diva_banner.ico&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Create main frame where element are displayed</span>
+    <span class="n">mainframe</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;3 3 12 12&quot;</span><span class="p">)</span>
+    <span class="n">mainframe</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">mainframe</span><span class="o">.</span><span class="n">columnconfigure</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="n">mainframe</span><span class="o">.</span><span class="n">rowconfigure</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mainframe</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">expand</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">BOTH</span><span class="p">)</span>
+
+    <span class="c1"># Variables:</span>
+    <span class="c1"># images directory</span>
+    <span class="n">img_dir</span> <span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+    <span class="c1"># gxl files directory</span>
+    <span class="n">gxl_dir</span> <span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+    <span class="c1"># feature in which the nodes are colored</span>
+    <span class="n">color_by_feature</span> <span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+    <span class="n">color_by_feature</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;None&#39;</span><span class="p">)</span>
+    <span class="c1"># decide if there is no image corresponding to a gxl file -&gt; True: Draw graph on blank background / False: Empty</span>
+    <span class="n">cb_blank</span> <span class="o">=</span> <span class="n">BooleanVar</span><span class="p">()</span>
+    <span class="n">cb_blank</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># Transparency</span>
+    <span class="n">transparency</span> <span class="o">=</span> <span class="n">IntVar</span><span class="p">()</span>
+    <span class="n">transparency</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">125</span><span class="p">)</span>
+    <span class="c1"># Scaling</span>
+    <span class="n">scaling</span> <span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+    <span class="n">scaling</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;1.0&#39;</span><span class="p">)</span>
+    <span class="c1"># Type of node selected in the option menu of the node style</span>
+    <span class="n">selected_node</span> <span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+    <span class="n">selected_node</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">graph_viewer</span> <span class="o">=</span> <span class="n">GraphViewer</span><span class="p">(</span><span class="n">img_dir</span><span class="p">,</span> <span class="n">gxl_dir</span><span class="p">,</span> <span class="n">color_by_feature</span><span class="p">,</span> <span class="n">cb_blank</span><span class="p">,</span> <span class="n">transparency</span><span class="p">,</span> <span class="n">scaling</span><span class="p">,</span> <span class="n">selected_node</span><span class="p">)</span>
+    <span class="n">tk_factory</span> <span class="o">=</span> <span class="n">TkFactory</span><span class="p">()</span>
+
+    <span class="c1"># Create button asking user to give the path of folder containing hotspot images</span>
+    <span class="n">img_path_button</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_button</span><span class="p">(</span><span class="n">mainframe</span><span class="p">,</span> <span class="s1">&#39;img_path_button&#39;</span><span class="p">)</span>
+    <span class="n">img_path_button</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">img_path_button</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Image Path:&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">graph_viewer</span><span class="o">.</span><span class="n">select_img_dir</span><span class="p">)</span>
+
+    <span class="n">img_path_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">mainframe</span><span class="p">,</span> <span class="s1">&#39;img_path_label&#39;</span><span class="p">)</span>
+    <span class="n">img_path_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">img_path_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">textvariable</span><span class="o">=</span><span class="n">graph_viewer</span><span class="o">.</span><span class="n">img_dir</span><span class="p">)</span>
+
+    <span class="c1"># Create button asking user to give the path of folder containing gxl files</span>
+    <span class="n">gxl_path_button</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_button</span><span class="p">(</span><span class="n">mainframe</span><span class="p">,</span> <span class="s1">&#39;gxl_path_button&#39;</span><span class="p">)</span>
+    <span class="n">gxl_path_button</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">gxl_path_button</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;GXL Path:&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">graph_viewer</span><span class="o">.</span><span class="n">select_gxl_dir</span><span class="p">)</span>
+
+    <span class="n">gxl_path_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">mainframe</span><span class="p">,</span> <span class="s1">&#39;gxl_path_label&#39;</span><span class="p">)</span>
+    <span class="n">gxl_path_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">gxl_path_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">textvariable</span><span class="o">=</span><span class="n">graph_viewer</span><span class="o">.</span><span class="n">gxl_dir</span><span class="p">)</span>
+
+    <span class="c1"># Create listbox to list all the gxl files</span>
+    <span class="n">lbf</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">mainframe</span><span class="p">)</span>
+    <span class="n">lbf</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">listbox</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_listbox</span><span class="p">(</span><span class="n">lbf</span><span class="p">,</span> <span class="s1">&#39;gxl_listbox&#39;</span><span class="p">)</span>
+    <span class="n">listbox</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">listbox</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">LEFT</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">BOTH</span><span class="p">)</span>
+
+    <span class="n">scrollbar</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_scrollbar</span><span class="p">(</span><span class="n">lbf</span><span class="p">,</span> <span class="s1">&#39;gxl_scrollbar&#39;</span><span class="p">)</span>
+    <span class="n">scrollbar</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="n">VERTICAL</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">listbox</span><span class="o">.</span><span class="n">yview</span><span class="p">)</span>
+    <span class="n">scrollbar</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">side</span><span class="o">=</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">Y</span><span class="p">)</span>
+
+    <span class="n">listbox</span><span class="p">[</span><span class="s1">&#39;yscrollcommand&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scrollbar</span><span class="o">.</span><span class="n">set</span>
+    <span class="n">listbox</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ListboxSelect&gt;&gt;&#39;</span><span class="p">,</span> <span class="n">graph_viewer</span><span class="o">.</span><span class="n">onselect</span><span class="p">)</span>
+
+    <span class="n">gxl_search_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">mainframe</span><span class="p">,</span> <span class="s1">&#39;gxl_search_label&#39;</span><span class="p">)</span>
+    <span class="n">gxl_search_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">gxl_search_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Search&#39;</span><span class="p">)</span>
+
+    <span class="n">lb_pattern</span> <span class="o">=</span> <span class="n">StringVar</span><span class="p">()</span>
+    <span class="n">lb_pattern</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">lb_pattern</span><span class="o">=</span><span class="n">lb_pattern</span><span class="p">:</span> <span class="n">graph_viewer</span><span class="o">.</span><span class="n">update_gxl_listbox</span><span class="p">(</span><span class="n">lb_pattern</span><span class="p">))</span>
+
+    <span class="n">lb_entry</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_entry</span><span class="p">(</span><span class="n">mainframe</span><span class="p">,</span> <span class="s1">&#39;lb_entry&#39;</span><span class="p">)</span>
+    <span class="n">lb_entry</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">textvariable</span><span class="o">=</span><span class="n">lb_pattern</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">DISABLED</span><span class="p">)</span>
+    <span class="n">lb_entry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Canvas to display images</span>
+    <span class="n">canvas</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_canvas</span><span class="p">(</span><span class="n">mainframe</span><span class="p">,</span> <span class="s1">&#39;canvas&#39;</span><span class="p">)</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
+    <span class="n">canvas</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sticky</span><span class="o">=</span><span class="s1">&#39;nsew&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Button to save current image</span>
+    <span class="n">save_button</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_button</span><span class="p">(</span><span class="n">mainframe</span><span class="p">,</span> <span class="s1">&#39;save_button&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">save_button</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Save As&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">graph_viewer</span><span class="o">.</span><span class="n">save_img</span><span class="p">)</span>
+    <span class="n">save_button</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Button to save all images</span>
+    <span class="n">save_all_button</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_button</span><span class="p">(</span><span class="n">mainframe</span><span class="p">,</span> <span class="s1">&#39;save_all_button&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">save_all_button</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Save All&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">graph_viewer</span><span class="o">.</span><span class="n">save_all</span><span class="p">)</span>
+    <span class="n">save_all_button</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Customisation on the right of the canvas</span>
+    <span class="n">right_canvas_frame</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Frame</span><span class="p">(</span><span class="n">mainframe</span><span class="p">)</span>
+    <span class="n">right_canvas_frame</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">rowspan</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+
+    <span class="c1"># Transparency</span>
+    <span class="n">transparency_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;transparency_label&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">transparency_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">transparency_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Transparency&#39;</span><span class="p">)</span>
+
+    <span class="n">transparency_scale</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_scale</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;transparency_scale&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">transparency_scale</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">from_</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="n">HORIZONTAL</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span>
+                                 <span class="n">activebackground</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="n">graph_viewer</span><span class="o">.</span><span class="n">onselect</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">transparency</span><span class="p">)</span>
+    <span class="n">transparency_scale</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">columnspan</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Scaling</span>
+    <span class="n">scaling_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;scaling_label&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">scaling_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">scaling_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Scaling: &#39;</span><span class="p">)</span>
+    <span class="c1"># Good scaling for hotspot images = 4.118660172440437</span>
+
+    <span class="c1"># register function to check if the entry is a float number or not</span>
+    <span class="n">reg_is_number</span> <span class="o">=</span> <span class="n">mainframe</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">is_number</span><span class="p">)</span>
+
+    <span class="n">scaling_entry</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_entry</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;scaling_entry&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">scaling_entry</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">textvariable</span><span class="o">=</span><span class="n">scaling</span><span class="p">,</span> <span class="n">validate</span><span class="o">=</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="n">validatecommand</span><span class="o">=</span><span class="p">(</span><span class="n">reg_is_number</span><span class="p">,</span> <span class="s1">&#39;%P&#39;</span><span class="p">))</span>
+    <span class="n">scaling_entry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">scaling_entry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Return&gt;&#39;</span><span class="p">,</span> <span class="n">graph_viewer</span><span class="o">.</span><span class="n">onselect</span><span class="p">)</span>
+
+    <span class="c1"># Color_by_feature</span>
+    <span class="n">color_by_feature</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">graph_viewer</span><span class="o">.</span><span class="n">onselect</span><span class="p">)</span>
+
+    <span class="n">cbf_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;cbf_label&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">cbf_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Color by feature:&#39;</span><span class="p">)</span>
+    <span class="n">cbf_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="n">cbf_menu</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_option_menu</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;cbf_menu&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span>
+                                             <span class="n">color_by_feature</span><span class="p">,</span> <span class="n">color_by_feature</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">cbf_menu</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="c1"># Checkbutton if the background should be blank when a graph didn&#39;t match with any images</span>
+    <span class="n">blank_checkbutton</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_checkbutton</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;blank_checkbutton&#39;</span><span class="p">)</span>
+    <span class="n">blank_checkbutton</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="n">graph_viewer</span><span class="o">.</span><span class="n">onselect</span><span class="p">,</span> <span class="n">offvalue</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">onvalue</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">cb_blank</span><span class="p">)</span>
+    <span class="n">blank_checkbutton</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+    <span class="n">blank_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;blank_label&#39;</span><span class="p">)</span>
+    <span class="n">blank_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Blank background ?&#39;</span><span class="p">)</span>
+    <span class="n">blank_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+
+    <span class="c1"># Node Style</span>
+    <span class="n">ns_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;ns_label&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">ns_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Node Style&#39;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Times&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="s1">&#39;bold&#39;</span><span class="p">))</span>
+    <span class="n">ns_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">selected_node</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">graph_viewer</span><span class="o">.</span><span class="n">update_ns_view</span><span class="p">)</span>
+    <span class="n">ns_option_menu</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_option_menu</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;ns_option_menu&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">selected_node</span><span class="p">,</span> <span class="o">*</span><span class="n">nodes</span><span class="p">)</span>
+    <span class="n">ns_option_menu</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">node_color_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;node_color_label&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">node_color_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Node Color&#39;</span><span class="p">)</span>
+    <span class="n">node_color_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ns_color_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;ns_color_label&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">ns_color_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">ns_color_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">ns_color_label</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Button-1&gt;&#39;</span><span class="p">,</span> <span class="n">graph_viewer</span><span class="o">.</span><span class="n">update_ns_color</span><span class="p">)</span>
+
+    <span class="n">node_radius_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;node_radius_label&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">node_radius_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Node Radius&#39;</span><span class="p">)</span>
+    <span class="n">node_radius_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># register function to check if the entry is a float number or not</span>
+    <span class="n">reg_is_int</span> <span class="o">=</span> <span class="n">mainframe</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">is_int</span><span class="p">)</span>
+    <span class="n">ns_entry</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_entry</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;ns_entry&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">ns_entry</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">validate</span><span class="o">=</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="n">validatecommand</span><span class="o">=</span><span class="p">(</span><span class="n">reg_is_int</span><span class="p">,</span> <span class="s1">&#39;%P&#39;</span><span class="p">))</span>
+    <span class="n">ns_entry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">ns_entry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Return&gt;&#39;</span><span class="p">,</span> <span class="n">graph_viewer</span><span class="o">.</span><span class="n">update_ns_radius</span><span class="p">)</span>
+
+    <span class="c1"># Edge Style</span>
+    <span class="n">es_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;es_label&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">es_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Edge Style&#39;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Times&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="s1">&#39;bold&#39;</span><span class="p">))</span>
+    <span class="n">es_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">edge_color_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;edge_color_label&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">edge_color_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Edge Color&#39;</span><span class="p">)</span>
+    <span class="n">edge_color_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">es_color_label</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;es_color_label&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">es_color_label</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">es_color_label</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">es_color_label</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Button-1&gt;&#39;</span><span class="p">,</span> <span class="n">graph_viewer</span><span class="o">.</span><span class="n">update_es_color</span><span class="p">)</span>
+
+    <span class="n">edge_thickness</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_label</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;edge_thickness&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">edge_thickness</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Edge Thickness&#39;</span><span class="p">)</span>
+    <span class="n">edge_thickness</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">es_entry</span> <span class="o">=</span> <span class="n">tk_factory</span><span class="o">.</span><span class="n">create_entry</span><span class="p">(</span><span class="n">right_canvas_frame</span><span class="p">,</span> <span class="s1">&#39;es_entry&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">es_entry</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">validate</span><span class="o">=</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="n">validatecommand</span><span class="o">=</span><span class="p">(</span><span class="n">reg_is_int</span><span class="p">,</span> <span class="s1">&#39;%P&#39;</span><span class="p">))</span>
+    <span class="n">es_entry</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">es_entry</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;&lt;Return&gt;&#39;</span><span class="p">,</span> <span class="n">graph_viewer</span><span class="o">.</span><span class="n">update_es_thickness</span><span class="p">)</span>
+
+    <span class="n">graph_viewer</span><span class="o">.</span><span class="n">set_components_customizers</span><span class="p">(</span><span class="n">tk_factory</span><span class="p">)</span>
+
+    <span class="n">graph_viewer</span><span class="o">.</span><span class="n">update_ns_view</span><span class="p">()</span>
+    <span class="n">graph_viewer</span><span class="o">.</span><span class="n">update_es_view</span><span class="p">()</span>
+    <span class="c1"># disable customisation when there is no picture on the canvas</span>
+    <span class="n">graph_viewer</span><span class="o">.</span><span class="n">disable_customisation</span><span class="p">()</span>
+
+    <span class="n">root</span><span class="o">.</span><span class="n">mainloop</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Graph visualisation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">graph_visualisation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Yannis Laaroussi.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

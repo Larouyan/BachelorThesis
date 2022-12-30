@@ -91,7 +91,9 @@ class GraphDrawer:
     def get_image(self):
         """
         Draw the graph (nodes + edges) on the image.
-        :return: image with the graph drawn
+
+        Returns:
+            image with the graph drawn
         """
         img = self.img
         points = {i: tuple([int(x_y[0] * self.scaling), int(x_y[1] * self.scaling)]) for i, x_y in
@@ -121,7 +123,9 @@ class GraphDrawer:
     def save(self, output_path: str):
         """
         Save the image into the output path given
-        :param output_path: path to the output directory
+
+        Parameters:
+            output_path: path to the output directory
         """
         output_file = os.path.join(output_path, f'{self.id}-vis.png')
         cv2.imwrite(output_file, cv2.cvtColor(self.get_image(), cv2.COLOR_RGB2BGRA))

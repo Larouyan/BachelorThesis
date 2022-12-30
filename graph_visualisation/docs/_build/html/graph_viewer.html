@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>graph_viewer module &mdash; Graph visualisation 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="gui package" href="gui.html" />
+    <link rel="prev" title="graph_visualisation" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Graph visualisation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">graph_visualisation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">graph_viewer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gui.html">gui package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">util package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vis_app.html">vis_app module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graph visualisation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">graph_visualisation</a></li>
+      <li class="breadcrumb-item active">graph_viewer module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/graph_viewer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-graph_viewer">
+<span id="graph-viewer-module"></span><h1>graph_viewer module<a class="headerlink" href="#module-graph_viewer" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">graph_viewer.</span></span><span class="sig-name descname"><span class="pre">GraphViewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gxl_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_by_feature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cb_blank</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transparency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.disable_customisation">
+<span class="sig-name descname"><span class="pre">disable_customisation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.disable_customisation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.disable_customisation" title="Permalink to this definition"></a></dt>
+<dd><p>Remove the permission to the user to interact with the customisation options.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.enable_customisation">
+<span class="sig-name descname"><span class="pre">enable_customisation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.enable_customisation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.enable_customisation" title="Permalink to this definition"></a></dt>
+<dd><p>Give the permission to the user to interact with the customisation options.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.get_color_by_feature">
+<span class="sig-name descname"><span class="pre">get_color_by_feature</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.get_color_by_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.get_color_by_feature" title="Permalink to this definition"></a></dt>
+<dd><p>Get the feature chosen by the user to correctly color the nodes.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Selected feature modifying the ‘None’ string to None keyword.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.load_graph_features">
+<span class="sig-name descname"><span class="pre">load_graph_features</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.load_graph_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.load_graph_features" title="Permalink to this definition"></a></dt>
+<dd><p>Fill the option menu with the graph features in order to color the nodes by features.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.load_gxl_dir">
+<span class="sig-name descname"><span class="pre">load_gxl_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.load_gxl_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.load_gxl_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Load the gxl files on the listbox.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>new_dir: directory where the gxl files are.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.onselect">
+<span class="sig-name descname"><span class="pre">onselect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.onselect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.onselect" title="Permalink to this definition"></a></dt>
+<dd><p>Draw the image with the graph on the canvas</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.save_all">
+<span class="sig-name descname"><span class="pre">save_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.save_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.save_all" title="Permalink to this definition"></a></dt>
+<dd><p>Save all images in a directory chosen by the user.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.save_img">
+<span class="sig-name descname"><span class="pre">save_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.save_img"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.save_img" title="Permalink to this definition"></a></dt>
+<dd><p>Save the current image in a directory chosen by the user.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.search_img_filepath">
+<span class="sig-name descname"><span class="pre">search_img_filepath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gxl_filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.search_img_filepath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.search_img_filepath" title="Permalink to this definition"></a></dt>
+<dd><p>Find the image corresponding to the gxl file given in input.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>gxl_filename: name of the gxl file.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Path to the corresponding image if exists, otherwise None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.select_gxl_dir">
+<span class="sig-name descname"><span class="pre">select_gxl_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.select_gxl_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.select_gxl_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Ask the user for the directory where the gxl files are.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.select_img_dir">
+<span class="sig-name descname"><span class="pre">select_img_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.select_img_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.select_img_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Ask the user for the directory where the images are.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.set_components_customizers">
+<span class="sig-name descname"><span class="pre">set_components_customizers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">factory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="gui.html#gui.tk_factory.TkFactory" title="gui.tk_factory.TkFactory"><span class="pre">gui.tk_factory.TkFactory</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.set_components_customizers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.set_components_customizers" title="Permalink to this definition"></a></dt>
+<dd><p>Set the values of the dictionaries components and customizers.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>factory: TkFactory holding two dictionaries, one for the name and the corresponding tkinter widgets and
+the other one for the name and a corresponding boolean value if the component is a customizer or not.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.update_es_color">
+<span class="sig-name descname"><span class="pre">update_es_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.update_es_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.update_es_color" title="Permalink to this definition"></a></dt>
+<dd><p>Update the color of the edges.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.update_es_thickness">
+<span class="sig-name descname"><span class="pre">update_es_thickness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.update_es_thickness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.update_es_thickness" title="Permalink to this definition"></a></dt>
+<dd><p>Update the thickness of the edges.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.update_es_view">
+<span class="sig-name descname"><span class="pre">update_es_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.update_es_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.update_es_view" title="Permalink to this definition"></a></dt>
+<dd><p>Update edge style view (color + thickness).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.update_gxl_listbox">
+<span class="sig-name descname"><span class="pre">update_gxl_listbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.update_gxl_listbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.update_gxl_listbox" title="Permalink to this definition"></a></dt>
+<dd><p>Update the list of gxl files such that it only display files that start with a given pattern.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>pattern: string given by the user.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.update_ns_color">
+<span class="sig-name descname"><span class="pre">update_ns_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.update_ns_color"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.update_ns_color" title="Permalink to this definition"></a></dt>
+<dd><p>Update the color of the nodes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.update_ns_radius">
+<span class="sig-name descname"><span class="pre">update_ns_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.update_ns_radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.update_ns_radius" title="Permalink to this definition"></a></dt>
+<dd><p>Update the radius of the nodes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graph_viewer.GraphViewer.update_ns_view">
+<span class="sig-name descname"><span class="pre">update_ns_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/graph_viewer.html#GraphViewer.update_ns_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#graph_viewer.GraphViewer.update_ns_view" title="Permalink to this definition"></a></dt>
+<dd><p>Update node style (color + radius).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="graph_visualisation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gui.html" class="btn btn-neutral float-right" title="gui package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Yannis Laaroussi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

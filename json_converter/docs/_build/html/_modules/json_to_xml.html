@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>json_to_xml &mdash; json converter Documentation 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> json converter Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">json_converter</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">json converter Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">json_to_xml</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for json_to_xml</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span> <span class="k">as</span> <span class="n">ET</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">minidom</span>
+
+
+<div class="viewcode-block" id="convert_json_to_xml"><a class="viewcode-back" href="../json_to_xml.html#json_to_xml.convert_json_to_xml">[docs]</a><span class="k">def</span> <span class="nf">convert_json_to_xml</span><span class="p">(</span><span class="n">files_to_process</span><span class="p">,</span> <span class="n">hotspot_folder</span><span class="p">,</span> <span class="n">output_folder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function take a list of json files containing data about Tumor, Extraepithelial CD8+ Cell and</span>
+<span class="sd">        Intraepithelial CD8+ Cell, a hotspot folder of xml files containing the coordinates of the hotspots</span>
+<span class="sd">        and an output folder as input and create xml files that can be loaded in ASAP in the output folder.</span>
+
+<span class="sd">        :param files_to_process: list of path to json files containing annotations.</span>
+<span class="sd">        :param hotspot_folder: path to the directory containing the xml files with the coordinates of the hotspots.</span>
+<span class="sd">        :param output_folder: path to the output directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># interested features</span>
+    <span class="n">annotations</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Tumor&#39;</span><span class="p">,</span> <span class="s1">&#39;Extraepithelial CD8+ Cell&#39;</span><span class="p">,</span> <span class="s1">&#39;Intraepithelial CD8+ Cell&#39;</span><span class="p">,</span> <span class="s1">&#39;Center of Mass&#39;</span><span class="p">,</span> <span class="s1">&#39;hotspot&#39;</span><span class="p">]</span>
+    <span class="c1"># color code of the features</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Tumor&#39;</span><span class="p">:</span> <span class="s1">&#39;#4d66cc&#39;</span><span class="p">,</span> <span class="s1">&#39;Extraepithelial CD8+ Cell&#39;</span><span class="p">:</span> <span class="s1">&#39;magenta&#39;</span><span class="p">,</span> <span class="s1">&#39;Intraepithelial CD8+ Cell&#39;</span><span class="p">:</span> <span class="s1">&#39;magenta&#39;</span><span class="p">,</span>
+              <span class="s1">&#39;Center of Mass&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;hotspot&#39;</span><span class="p">:</span> <span class="s1">&#39;#64FE2E&#39;</span><span class="p">}</span>
+
+    <span class="n">hotspot_name</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">hotspot_folder</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">file_to_process</span> <span class="ow">in</span> <span class="n">files_to_process</span><span class="p">:</span>
+        <span class="c1"># initiate xml_tree</span>
+        <span class="n">xml_tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;ASAP_Annotations&#39;</span><span class="p">)</span>
+        <span class="c1"># Make the annotations and coordinates</span>
+        <span class="n">xml_annotations</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_tree</span><span class="p">,</span> <span class="s1">&#39;Annotations&#39;</span><span class="p">)</span>
+        <span class="c1"># Make the groups</span>
+        <span class="n">xml_annotation_groups</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_tree</span><span class="p">,</span> <span class="s1">&#39;AnnotationGroups&#39;</span><span class="p">)</span>
+
+        <span class="c1"># remove .json extension</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_to_process</span><span class="p">)</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># add .xml extension</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">_asap.xml&#39;</span><span class="p">)</span>
+        <span class="c1"># open correct hotspot xml</span>
+        <span class="n">file_code</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;Masks_(.*)-level0-hotspot&#39;</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_code</span> <span class="ow">in</span> <span class="n">hotspot_name</span><span class="p">:</span>
+            <span class="c1"># open hotspot xml file</span>
+            <span class="n">hotspot_file</span> <span class="o">=</span> <span class="n">minidom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">hotspot_folder</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">file_code</span> <span class="o">+</span> <span class="s1">&#39;.xml&#39;</span><span class="p">))</span>
+            <span class="c1"># read coordinates</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">hotspot_file</span><span class="o">.</span><span class="n">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;Coordinate&#39;</span><span class="p">)</span>
+            <span class="n">hotspot_coord</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">float</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+                             <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
+            <span class="c1"># extract top left corner coordinates</span>
+            <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">hotspot_coord</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># open json file</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_to_process</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="c1"># load json file</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">objects</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Objects_Data&#39;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
+                    <span class="c1"># make the group</span>
+                    <span class="n">xml_group</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_annotation_groups</span><span class="p">,</span> <span class="s1">&#39;Group&#39;</span><span class="p">,</span>
+                                              <span class="n">attrib</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="n">group</span><span class="p">,</span> <span class="s1">&#39;PartOfGroup&#39;</span><span class="p">:</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span> <span class="s1">&#39;Color&#39;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="n">group</span><span class="p">]})</span>
+                    <span class="n">xml_group_attrib</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_group</span><span class="p">,</span> <span class="s1">&#39;Attributes&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="nb">object</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">objects</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="nb">object</span><span class="p">[</span><span class="s1">&#39;Classification&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">group</span><span class="p">:</span>
+                            <span class="c1"># Tumour and CD8+ Cell (Polygons)</span>
+                            <span class="c1"># annotation</span>
+                            <span class="n">annotation_attrib</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Annotation </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;PartOfGroup&#39;</span><span class="p">:</span> <span class="n">group</span><span class="p">,</span> <span class="s1">&#39;Color&#39;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="n">group</span><span class="p">],</span>
+                                                 <span class="s1">&#39;Type&#39;</span><span class="p">:</span> <span class="s1">&#39;Polygon&#39;</span><span class="p">}</span>
+                            <span class="n">xml_annotation</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_annotations</span><span class="p">,</span> <span class="s1">&#39;Annotation&#39;</span><span class="p">,</span> <span class="n">annotation_attrib</span><span class="p">)</span>
+                            <span class="c1"># ROI Points</span>
+                            <span class="n">xml_coordinates</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_annotation</span><span class="p">,</span> <span class="s1">&#39;Coordinates&#39;</span><span class="p">)</span>
+                            <span class="c1"># get the list of points</span>
+                            <span class="n">points</span> <span class="o">=</span> <span class="nb">object</span><span class="p">[</span><span class="s1">&#39;ROI_Points&#39;</span><span class="p">]</span>
+                            <span class="c1"># iterate over the list of points</span>
+                            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+                                <span class="n">coord_attrib</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Order&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">),</span> <span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">dx</span><span class="p">),</span> <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dy</span><span class="p">)}</span>
+                                <span class="n">xml_coordinate</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_coordinates</span><span class="p">,</span> <span class="s1">&#39;Coordinate&#39;</span><span class="p">,</span> <span class="n">attrib</span><span class="o">=</span><span class="n">coord_attrib</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">group</span> <span class="o">==</span> <span class="s1">&#39;Center of Mass&#39;</span><span class="p">:</span>
+                            <span class="c1"># Center of Mass (Dot)</span>
+                            <span class="n">annotation_attrib</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Annotation </span><span class="si">{</span><span class="n">i</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;PartOfGroup&#39;</span><span class="p">:</span> <span class="n">group</span><span class="p">,</span>
+                                                 <span class="s1">&#39;Color&#39;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="n">group</span><span class="p">],</span> <span class="s1">&#39;Type&#39;</span><span class="p">:</span> <span class="s1">&#39;Dot&#39;</span><span class="p">}</span>
+                            <span class="c1"># get coordinates of the center of mass</span>
+                            <span class="n">cmx</span><span class="p">,</span> <span class="n">cmy</span> <span class="o">=</span> <span class="nb">object</span><span class="p">[</span><span class="s1">&#39;Center_of_Mass&#39;</span><span class="p">]</span>
+                            <span class="n">cm_attrib</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Order&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">cmx</span> <span class="o">+</span> <span class="n">dx</span><span class="p">),</span> <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">cmy</span> <span class="o">+</span> <span class="n">dy</span><span class="p">)}</span>
+                            <span class="n">xml_annotation</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_annotations</span><span class="p">,</span> <span class="s1">&#39;Annotation&#39;</span><span class="p">,</span> <span class="n">annotation_attrib</span><span class="p">)</span>
+                            <span class="n">xml_coordinates</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_annotation</span><span class="p">,</span> <span class="s1">&#39;Coordinates&#39;</span><span class="p">)</span>
+                            <span class="n">xml_coordinate</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_coordinates</span><span class="p">,</span> <span class="s1">&#39;Coordinate&#39;</span><span class="p">,</span> <span class="n">attrib</span><span class="o">=</span><span class="n">cm_attrib</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">group</span> <span class="o">==</span> <span class="s1">&#39;hotspot&#39;</span><span class="p">:</span>
+                            <span class="c1"># Hotspot (Rectangle)</span>
+                            <span class="n">annotation_attrib</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Annotation </span><span class="si">{</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;PartOfGroup&#39;</span><span class="p">:</span> <span class="n">group</span><span class="p">,</span>
+                                                 <span class="s1">&#39;Color&#39;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="n">group</span><span class="p">],</span> <span class="s1">&#39;Type&#39;</span><span class="p">:</span> <span class="s1">&#39;Rectangle&#39;</span><span class="p">}</span>
+                            <span class="n">xml_annotation</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_annotations</span><span class="p">,</span> <span class="s1">&#39;Annotation&#39;</span><span class="p">,</span> <span class="n">annotation_attrib</span><span class="p">)</span>
+                            <span class="n">xml_coordinates</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_annotation</span><span class="p">,</span> <span class="s1">&#39;Coordinates&#39;</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hotspot_coord</span><span class="p">):</span>
+                                <span class="n">coord_attrib</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Order&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">),</span> <span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])}</span>
+                                <span class="n">xml_coordinate</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">xml_coordinates</span><span class="p">,</span> <span class="s1">&#39;Coordinate&#39;</span><span class="p">,</span> <span class="n">attrib</span><span class="o">=</span><span class="n">coord_attrib</span><span class="p">)</span>
+                            <span class="k">break</span>
+
+            <span class="c1"># Write</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">ElementTree</span><span class="p">(</span><span class="n">xml_tree</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There is no hotspot annotations check folder for </span><span class="si">{</span><span class="n">file_to_process</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># pass input folder of json files and output folder as program arguments</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="s1">&#39;Input and output folder&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--input_files_folder&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;directory of the json data files&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--output_folder&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;directory of the output folder&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--hotspot_folder&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;directory of hotspot coordinates folder&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="c1"># get the values of input and output folder</span>
+    <span class="n">input_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">input_files_folder</span>
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">output_folder</span>
+    <span class="n">hotspot_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">hotspot_folder</span>
+
+    <span class="c1"># get all files to process as a list</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">input_dir</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">input_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;Masks_.*-level0-hotspot.json&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)]</span>
+    <span class="c1"># xml hotspot files</span>
+    <span class="n">hotspots</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hotspot_dir</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">hotspot_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.xml&#39;</span><span class="p">)]</span>
+
+    <span class="c1"># if output folder given doesn&#39;t exist then create it</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+
+    <span class="c1"># stop the process if input folder is empty</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;There is no files to process in the directory </span><span class="si">{</span><span class="n">input_dir</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">hotspots</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+    <span class="c1"># create xml files</span>
+    <span class="n">convert_json_to_xml</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">hotspots</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Yannis Laaroussi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

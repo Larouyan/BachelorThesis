@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gui.tk_factory &mdash; Graph visualisation 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Graph visualisation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">graph_visualisation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Graph visualisation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gui.tk_factory</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for gui.tk_factory</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tkinter</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">colorchooser</span><span class="p">,</span> <span class="n">filedialog</span><span class="p">,</span> <span class="n">ttk</span>
+
+<span class="kn">from</span> <span class="nn">gui.gui_factory</span> <span class="kn">import</span> <span class="n">GUIFactory</span>
+
+
+<div class="viewcode-block" id="ComponentAlreadyExists"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.ComponentAlreadyExists">[docs]</a><span class="k">class</span> <span class="nc">ComponentAlreadyExists</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TkFactory"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory">[docs]</a><span class="k">class</span> <span class="nc">TkFactory</span><span class="p">(</span><span class="n">GUIFactory</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class creates and stores tkinter component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customizers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TkFactory.add"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">tkinter</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a given widget to dictionaries components and customizers ensuring that the component is unique.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            name: identifier for a widget.</span>
+<span class="sd">            widget: tkinter widget.</span>
+<span class="sd">            is_customizer: boolean which is true if the widget is considered as a modifier.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The component </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> has already been added&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ComponentAlreadyExists</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">widget</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">customizers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_customizer</span></div>
+
+<div class="viewcode-block" id="TkFactory.create_button"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.create_button">[docs]</a>    <span class="k">def</span> <span class="nf">create_button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">button</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">button</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">button</span></div>
+
+<div class="viewcode-block" id="TkFactory.create_label"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.create_label">[docs]</a>    <span class="k">def</span> <span class="nf">create_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">label</span></div>
+
+<div class="viewcode-block" id="TkFactory.create_entry"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.create_entry">[docs]</a>    <span class="k">def</span> <span class="nf">create_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Entry</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">entry</span></div>
+
+<div class="viewcode-block" id="TkFactory.create_listbox"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.create_listbox">[docs]</a>    <span class="k">def</span> <span class="nf">create_listbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">listbox</span> <span class="o">=</span> <span class="n">Listbox</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">listbox</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">listbox</span></div>
+
+<div class="viewcode-block" id="TkFactory.create_scrollbar"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.create_scrollbar">[docs]</a>    <span class="k">def</span> <span class="nf">create_scrollbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">scrollbar</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Scrollbar</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">scrollbar</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scrollbar</span></div>
+
+<div class="viewcode-block" id="TkFactory.create_canvas"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.create_canvas">[docs]</a>    <span class="k">def</span> <span class="nf">create_canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">canvas</span> <span class="o">=</span> <span class="n">Canvas</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">canvas</span></div>
+
+<div class="viewcode-block" id="TkFactory.create_checkbutton"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.create_checkbutton">[docs]</a>    <span class="k">def</span> <span class="nf">create_checkbutton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">checkbutton</span> <span class="o">=</span> <span class="n">ttk</span><span class="o">.</span><span class="n">Checkbutton</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">checkbutton</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">checkbutton</span></div>
+
+<div class="viewcode-block" id="TkFactory.create_scale"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.create_scale">[docs]</a>    <span class="k">def</span> <span class="nf">create_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">Scale</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scale</span></div>
+
+<div class="viewcode-block" id="TkFactory.create_option_menu"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.create_option_menu">[docs]</a>    <span class="k">def</span> <span class="nf">create_option_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Frame</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span>  <span class="o">*</span><span class="n">options</span><span class="p">):</span>
+        <span class="n">option_menu</span> <span class="o">=</span> <span class="n">OptionMenu</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">option_menu</span><span class="p">,</span> <span class="n">is_customizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">option_menu</span></div>
+
+<div class="viewcode-block" id="TkFactory.get_components"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.get_components">[docs]</a>    <span class="k">def</span> <span class="nf">get_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span></div>
+
+<div class="viewcode-block" id="TkFactory.get_customizers"><a class="viewcode-back" href="../../gui.html#gui.tk_factory.TkFactory.get_customizers">[docs]</a>    <span class="k">def</span> <span class="nf">get_customizers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">customizers</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Yannis Laaroussi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

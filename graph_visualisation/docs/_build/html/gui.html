@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gui package &mdash; Graph visualisation 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="util package" href="util.html" />
+    <link rel="prev" title="graph_viewer module" href="graph_viewer.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Graph visualisation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">graph_visualisation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="graph_viewer.html">graph_viewer module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">gui package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gui.gui_factory">gui.gui_factory module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gui.tk_factory">gui.tk_factory module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gui">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">util package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vis_app.html">vis_app module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graph visualisation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">graph_visualisation</a></li>
+      <li class="breadcrumb-item active">gui package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/gui.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gui-package">
+<h1>gui package<a class="headerlink" href="#gui-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-gui.gui_factory">
+<span id="gui-gui-factory-module"></span><h2>gui.gui_factory module<a class="headerlink" href="#module-gui.gui_factory" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gui.gui_factory.GUIFactory">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">gui.gui_factory.</span></span><span class="sig-name descname"><span class="pre">GUIFactory</span></span><a class="reference internal" href="_modules/gui/gui_factory.html#GUIFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.gui_factory.GUIFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.gui_factory.GUIFactory.create_button">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">create_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_factory.html#GUIFactory.create_button"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.gui_factory.GUIFactory.create_button" title="Permalink to this definition"></a></dt>
+<dd><p>Create a button</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.gui_factory.GUIFactory.create_canvas">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">create_canvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_factory.html#GUIFactory.create_canvas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.gui_factory.GUIFactory.create_canvas" title="Permalink to this definition"></a></dt>
+<dd><p>Create a canvas</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.gui_factory.GUIFactory.create_checkbutton">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">create_checkbutton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_factory.html#GUIFactory.create_checkbutton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.gui_factory.GUIFactory.create_checkbutton" title="Permalink to this definition"></a></dt>
+<dd><p>Create a check button</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.gui_factory.GUIFactory.create_entry">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">create_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_factory.html#GUIFactory.create_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.gui_factory.GUIFactory.create_entry" title="Permalink to this definition"></a></dt>
+<dd><p>Create an entry (or text field)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.gui_factory.GUIFactory.create_label">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">create_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_factory.html#GUIFactory.create_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.gui_factory.GUIFactory.create_label" title="Permalink to this definition"></a></dt>
+<dd><p>Create a label</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.gui_factory.GUIFactory.create_listbox">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">create_listbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_factory.html#GUIFactory.create_listbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.gui_factory.GUIFactory.create_listbox" title="Permalink to this definition"></a></dt>
+<dd><p>Create a list box</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.gui_factory.GUIFactory.create_option_menu">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">create_option_menu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_factory.html#GUIFactory.create_option_menu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.gui_factory.GUIFactory.create_option_menu" title="Permalink to this definition"></a></dt>
+<dd><p>Create an option menu</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.gui_factory.GUIFactory.create_scale">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">create_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_factory.html#GUIFactory.create_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.gui_factory.GUIFactory.create_scale" title="Permalink to this definition"></a></dt>
+<dd><p>Create a scale</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.gui_factory.GUIFactory.create_scrollbar">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">create_scrollbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/gui_factory.html#GUIFactory.create_scrollbar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.gui_factory.GUIFactory.create_scrollbar" title="Permalink to this definition"></a></dt>
+<dd><p>Create a scrollbar</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gui.tk_factory">
+<span id="gui-tk-factory-module"></span><h2>gui.tk_factory module<a class="headerlink" href="#module-gui.tk_factory" title="Permalink to this headline"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="gui.tk_factory.ComponentAlreadyExists">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">gui.tk_factory.</span></span><span class="sig-name descname"><span class="pre">ComponentAlreadyExists</span></span><a class="reference internal" href="_modules/gui/tk_factory.html#ComponentAlreadyExists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.ComponentAlreadyExists" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">gui.tk_factory.</span></span><span class="sig-name descname"><span class="pre">TkFactory</span></span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gui.gui_factory.GUIFactory" title="gui.gui_factory.GUIFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">gui.gui_factory.GUIFactory</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">name:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">widget:</span> <span class="pre">&lt;module</span> <span class="pre">'tkinter'</span> <span class="pre">from</span> <span class="pre">'C:\\ProgramData\\Anaconda3\\lib\\tkinter\\__init__.py'&gt;</span></em>, <em class="sig-param"><span class="pre">is_customizer:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.add" title="Permalink to this definition"></a></dt>
+<dd><p>Add a given widget to dictionaries components and customizers ensuring that the component is unique.</p>
+<dl class="simple">
+<dt>Parameters:</dt><dd><p>name: identifier for a widget.
+widget: tkinter widget.
+is_customizer: boolean which is true if the widget is considered as a modifier.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.create_button">
+<span class="sig-name descname"><span class="pre">create_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_customizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.create_button"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.create_button" title="Permalink to this definition"></a></dt>
+<dd><p>Create a button</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.create_canvas">
+<span class="sig-name descname"><span class="pre">create_canvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_customizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.create_canvas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.create_canvas" title="Permalink to this definition"></a></dt>
+<dd><p>Create a canvas</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.create_checkbutton">
+<span class="sig-name descname"><span class="pre">create_checkbutton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_customizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.create_checkbutton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.create_checkbutton" title="Permalink to this definition"></a></dt>
+<dd><p>Create a check button</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.create_entry">
+<span class="sig-name descname"><span class="pre">create_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_customizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.create_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.create_entry" title="Permalink to this definition"></a></dt>
+<dd><p>Create an entry (or text field)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.create_label">
+<span class="sig-name descname"><span class="pre">create_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_customizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.create_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.create_label" title="Permalink to this definition"></a></dt>
+<dd><p>Create a label</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.create_listbox">
+<span class="sig-name descname"><span class="pre">create_listbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_customizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.create_listbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.create_listbox" title="Permalink to this definition"></a></dt>
+<dd><p>Create a list box</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.create_option_menu">
+<span class="sig-name descname"><span class="pre">create_option_menu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_customizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.create_option_menu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.create_option_menu" title="Permalink to this definition"></a></dt>
+<dd><p>Create an option menu</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.create_scale">
+<span class="sig-name descname"><span class="pre">create_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_customizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.create_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.create_scale" title="Permalink to this definition"></a></dt>
+<dd><p>Create a scale</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.create_scrollbar">
+<span class="sig-name descname"><span class="pre">create_scrollbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">tkinter.Frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_customizer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.create_scrollbar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.create_scrollbar" title="Permalink to this definition"></a></dt>
+<dd><p>Create a scrollbar</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.get_components">
+<span class="sig-name descname"><span class="pre">get_components</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.get_components"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.get_components" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.tk_factory.TkFactory.get_customizers">
+<span class="sig-name descname"><span class="pre">get_customizers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui/tk_factory.html#TkFactory.get_customizers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gui.tk_factory.TkFactory.get_customizers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gui">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gui" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="graph_viewer.html" class="btn btn-neutral float-left" title="graph_viewer module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="util.html" class="btn btn-neutral float-right" title="util package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Yannis Laaroussi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

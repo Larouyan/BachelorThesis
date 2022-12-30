@@ -45,8 +45,10 @@ class GraphViewer:
     def set_components_customizers(self, factory: TkFactory):
         """
         Set the values of the dictionaries components and customizers.
-        :param factory: TkFactory holding two dictionaries, one for the name and the corresponding tkinter widgets and
-        the other one for the name and a corresponding boolean value if the component is a customizer or not.
+
+        Parameters:
+             factory: TkFactory holding two dictionaries, one for the name and the corresponding tkinter widgets and
+             the other one for the name and a corresponding boolean value if the component is a customizer or not.
         """
         self.components = factory.get_components()
         self.customizers = factory.get_customizers()
@@ -72,7 +74,9 @@ class GraphViewer:
     def load_gxl_dir(self, new_dir):
         """
         Load the gxl files on the listbox.
-        :param new_dir: directory where the gxl files are.
+
+        Parameters:
+            new_dir: directory where the gxl files are.
         """
         self.gxl_dir.set(new_dir)
         listbox = self.components['gxl_listbox']
@@ -92,7 +96,9 @@ class GraphViewer:
     def update_gxl_listbox(self, pattern):
         """
         Update the list of gxl files such that it only display files that start with a given pattern.
-        :param pattern: string given by the user.
+
+        Parameters:
+             pattern: string given by the user.
         """
         listbox = self.components['gxl_listbox']
         listbox.delete(0, END)
@@ -113,7 +119,9 @@ class GraphViewer:
     def get_color_by_feature(self):
         """
         Get the feature chosen by the user to correctly color the nodes.
-        :return: Selected feature modifying the 'None' string to None keyword.
+
+        Returns:
+             Selected feature modifying the 'None' string to None keyword.
         """
         if self.color_by_feature.get() == 'None':
             return None
@@ -152,8 +160,12 @@ class GraphViewer:
     def search_img_filepath(self, gxl_filename):
         """
         Find the image corresponding to the gxl file given in input.
-        :param gxl_filename: name of the gxl file.
-        :return: The path to the corresponding image if it exists, otherwise it returns None.
+
+        Parameters:
+            gxl_filename: name of the gxl file.
+
+        Returns:
+            Path to the corresponding image if exists, otherwise None.
         """
         extensions = ('png', 'bmp', 'jpg', 'jpeg', 'gif')
 
